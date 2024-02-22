@@ -2,11 +2,13 @@
 include('dbconfig.php');
 
 // Test Cookie for development
-$_COOKIE = true;
+$_COOKIE = false;
 
-if ($_COOKIE == true):
-    continue;
-else:
+if ($_COOKIE != true) :
+?> <script>
+        window.location.href = "terms.php";
+    </script>
+<?php endif;
 ?>
 
 <!-- <script>
