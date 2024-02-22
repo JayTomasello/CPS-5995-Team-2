@@ -1,3 +1,21 @@
+<?php
+include('dbconfig.php');
+
+// Test Cookie for development
+$_COOKIE = true;
+
+if ($_COOKIE == true):
+    continue;
+else:
+?>
+
+<!-- <script>
+    if (!confirm("Please accept the terms to continue.")) {
+        window.location.href = "terms.php";
+    }
+</script> -->
+
+
 <!DOCTYPE html>
 <html lang="en">
 
