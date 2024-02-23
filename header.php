@@ -27,51 +27,51 @@ $_COOKIE = false;
 <!-- 80, 104, 148 -->
 <!-- (170, 159, 91) -->
 
-<div class="modal-dialog modal-fullscreen">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">NJLaw Digest</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <p>Modal body text goes here.</p>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+<div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
         </div>
     </div>
 </div>
 
 <nav class="navbar navbar-expand-lg bg" style="background-color:white">
-    <div class="container-fluid">
-        <img src="../NJLawDigest Logo.png" class="img" width="75px" alt="...">
-        <label class="navbar-brand fs-4 text-dark m-3" style="font-family:Georgia, 'Times New Roman', Times, serif;">NJLaw Digest</label>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active text-dark" aria-current="page" href="index.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active text-dark" aria-current="page" href="assign_course_evaluations.php">Course Evaluations</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tables</a>
-                    <ul class="dropdown-menu">
-
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="../signout.php">Sign Out</a>
-                </li>
+    <div class="container-fluid d-flex justify-content-start">
+        <img src="../NJLawDigest Logo.png" class="img me-4" width="100px" alt="...">
+        <label class="navbar-brand fs-1 text-dark me-4" style="font-family: Georgia, 'Times New Roman', Times, serif">NJLaw Digest</label>
+        <div class="dropdown me-4">
+            <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="10,20">
+                Search Laws by Category
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
         </div>
+
+        <div class="dropdown me-4">
+            <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="10,20">
+                Search Laws by Legislative Session
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+        </div>
+
     </div>
-    <div class="container-fluid flex-row-reverse">
-        <form class="d-flex" role="search" method="GET">
-            <label class="p-2 navbar-brand fs-6 text-dark" href="./index.php">Search System Database:</label>
-            <input class="form-control me-2" type="search" name="search" placeholder="Enter table name..." aria-label="Search">
-            <button class="btn btn-outline-dark text-dark bg-white" name="submit" type="submit">Go</button>
-        </form>
-    </div>
+
+
 </nav>
