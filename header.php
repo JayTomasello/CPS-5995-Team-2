@@ -46,9 +46,12 @@ $_COOKIE = false;
 </div>
 
 <nav class="navbar navbar-expand-lg bg" style="background-color:white">
+
     <div class="container-fluid d-flex justify-content-start">
+
         <img src="../NJLawDigest Logo.png" class="img me-4" width="100px" alt="...">
         <label class="navbar-brand fs-1 text-dark me-4" style="font-family: Georgia, 'Times New Roman', Times, serif">NJLaw Digest</label>
+
         <div class="dropdown me-4">
             <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="10,20">
                 Search Laws by Category
@@ -73,5 +76,11 @@ $_COOKIE = false;
 
     </div>
 
+    <div class="container-fluid justify-content-end">
 
+        <label class="navbar-brand fs-4 text-dark me-4" style="font-family: Georgia, 'Times New Roman', Times, serif">Welcome, Guest.</label>
+        <img src="./User Icon.png" class="img" width="50px" alt="...">
+        <button type="button" class="btn btn-secondary m-4">Login?</button>
+
+    </div>
 </nav>
