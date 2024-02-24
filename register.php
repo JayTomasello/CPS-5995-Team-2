@@ -19,12 +19,15 @@
         </div>
 
         <div class="mb-3">
-            <input name="Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Kean Password" required>
+            <input name="Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required>
         </div>
 
-        <button name="forgot_pass" type="submit" value="submit" class="btn btn-secondary mx-2" href="./newpass.php">Forgot Password?</button>
-        <button name="forgot_pass" type="submit" value="submit" class="btn btn-secondary mx-2" href="./register.php">Sign Up</button>
-        <button name="Enter" type="submit" value="submit" class="btn btn-primary mx-5">Submit</button>
+        <div class="mb-3">
+            <input name="Confirm Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Confirm Password" required>
+        </div>
+
+        <button name="Enter" type="submit" value="submit" class="btn btn-primary">Submit</button>
+
     </form>
 </body>
 

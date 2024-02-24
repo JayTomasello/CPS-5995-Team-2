@@ -14,17 +14,14 @@
     <form class="text-center m-5" action="logintest.php" method="POST">
         <h1 class="card-title" style="font-family:Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</h1>
 
-        <div class="mb-3">
+        <h3 class="card-title my-3" style="font-family:Georgia, 'Times New Roman', Times, serif">Type your account email below, and we will send you a link to reset your password.</h3>
+
+        <div class="mb-3 m-5">
             <input name="Email" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Kean Email" required>
         </div>
 
-        <div class="mb-3">
-            <input name="Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Kean Password" required>
-        </div>
+        <button name="Enter" type="submit" value="submit" class="btn btn-primary">Submit</button>
 
-        <button name="forgot_pass" type="submit" value="submit" class="btn btn-secondary mx-2" href="./newpass.php">Forgot Password?</button>
-        <button name="forgot_pass" type="submit" value="submit" class="btn btn-secondary mx-2" href="./register.php">Sign Up</button>
-        <button name="Enter" type="submit" value="submit" class="btn btn-primary mx-5">Submit</button>
     </form>
 </body>
 
