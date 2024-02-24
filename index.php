@@ -23,8 +23,7 @@ include('header.php');
         <!-- Document Viewer -->
         <div class="col-7 h-auto d-inline-block mt-5 m-1 rounded-5 border-3" style="background-color:white">
             <div class="h-100 rounded-5 m-1" style="background-color: rgb(80, 104, 148);">
-                <div class="">Hello</div>
-                <div class="">World</div>
+                <div class="m-4 p-3 h-75 rounded-5 my-3" style="background-color:white">Hello World</div>
             </div>
         </div>
 
