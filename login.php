@@ -11,7 +11,7 @@
 
 <body class="container justify-content-center" style="background-image: url(./Courthouse.jpg); background-size:cover; background-position:center -100px">
     <h3 class="text-center" style="margin-top: 50px;">By Xavier Amparo, Matthew Fernandez, Julio Rodriguez, and Joseph Tomasello</h3>
-    <form class="w-50" action="logintest.php" method="POST">
+    <form class="w-50 text-center content-center m-3" action="logintest.php" method="POST">
         <h1>Law Digest 4 New Jersey</h1>
 
         <div class="mb-3">
