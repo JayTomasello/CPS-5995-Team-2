@@ -35,11 +35,10 @@ $_COOKIE = false;
         <img src="../NJLawDigest Logo.png" class="img me-4" width="100px" alt="...">
         <label class="navbar-brand fs-1 text-dark me-4" style="font-family: Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</label>
 
-        <div class="dropdown me-4">
-            <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="10,20">
-                Search Laws by Category
+        <div class="btn-group m-3">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">Search Laws by Category<span class="caret"></span></button>
             </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
+            <ul class="dropdown-menu scrollable-menu" role="menu">
                 <li><a class="dropdown-item" href="#">Abortion</a></li>
                 <li><a class="dropdown-item" href="#">Agriculture</a></li>
                 <li><a class="dropdown-item" href="#">Alcohol</a></li>
@@ -132,11 +131,11 @@ $_COOKIE = false;
             </ul>
         </div>
 
-        <div class="dropdown me-4">
+        <div class="btn-group m-3">
             <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="10,20">
                 Search Laws by Legislative Session
             </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
+            <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="#">Action</a></li>
                 <li><a class="dropdown-item" href="#">Another action</a></li>
                 <li><a class="dropdown-item" href="#">Something else here</a></li>
@@ -149,7 +148,7 @@ $_COOKIE = false;
 
         <label class="navbar-brand fs-4 text-dark me-4" style="font-family: Georgia, 'Times New Roman', Times, serif">Welcome, Guest.</label>
         <img src="./User Icon.png" class="img" width="50px" alt="...">
-        <button type="button" class="btn btn-secondary mx-4">Login?</button>
+        <button type="button" class="btn btn-secondary mx-4" href="./login.php">Login?</button>
 
     </div>
 </nav>
