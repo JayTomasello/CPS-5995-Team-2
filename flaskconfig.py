@@ -67,6 +67,25 @@ def register():
         return 'Registration successful. Please check your email to confirm your account.'
 
 
+@app.route("/login", methods=['POST'])
+def login():
+    email = request.form['Email']
+    password = request.form['Password']
+
+    # Check if user exists:
+    user = supabase.table('ld4nj.sub_user').select(
+        'email', 'password').eq('email', email).execute()
+
+    if user:
+        if user['password'] == hash_password(password):
+            # Set a cookie to remember the user
+            response = make_response('Login successful')
+            response.set_cookie('signedIn', email)
+            return response
+        else:
+            return 'Invalid password'
+
+
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
     # Verify the token and update user's account status as confirmed
