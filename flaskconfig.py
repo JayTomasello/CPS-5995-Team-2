@@ -50,7 +50,7 @@ def send_confirmation_email(email, password):
     mail.send(msg)
 
 
-@app.route("/register", methods=['POST'])
+@app.route("/register.php", methods=['POST'])
 def register():
     email = request.form['Email']
     password = request.form['Password']
