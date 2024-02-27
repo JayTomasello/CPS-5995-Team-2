@@ -1,3 +1,9 @@
+<?php
+$command_exec = escapeshellcmd('python3 /var/www/html/ld4nj/send_confirmation_email.py');
+
+?>
+
+
 <html lang="en">
 
 <head>
@@ -30,16 +36,6 @@
         <button name="Enter" type="submit" value="submit" class="btn btn-primary">Submit</button>
 
     </form>
-    <?php
-    if (isset($_POST['Enter'])) {
-        $email = $_POST['Email'];
-        $password = $_POST['Password'];
-        $confirm_password = $_POST['Confirm Password'];
-        if ($password != $confirm_password) {
-            echo "<h2>Passwords do not match</h2>";
-        }
-    }
-    ?>
 </body>
 
 </html>

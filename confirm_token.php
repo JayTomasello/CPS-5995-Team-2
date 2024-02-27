@@ -13,7 +13,7 @@
     <h3 class="text-center" style="margin-top: 50px; font-family:Georgia, 'Times New Roman', Times, serif">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3>
 
     <h2>Your token has been confirmed and a cookie has been set. Please return back to our landing page:</h2>
-    <button class="btn btn-secondary mx-4" href="index.php">Landing Page</button>
+    <a class="btn btn-secondary mx-4" href="index.php">Landing Page</a>
 
 </body>
 
