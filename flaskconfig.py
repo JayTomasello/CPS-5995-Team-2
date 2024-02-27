@@ -55,7 +55,7 @@ def register():
     email = request.form['Email']
     password = request.form['Password']
 
-    print("Hello World")
+    return "Hello, World!"
 
     # # Check if email is already registered
     # user_exists = supabase.table('ld4nj.sub_user').select(
@@ -69,7 +69,7 @@ def register():
     #     return 'Registration successful. Please check your email to confirm your account.'
 
 
-@app.route("/login", methods=['POST'])
+@app.route("/login.php", methods=['POST'])
 def login():
     email = request.form['Email']
     password = request.form['Password']
