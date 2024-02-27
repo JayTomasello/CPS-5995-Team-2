@@ -1,19 +1,14 @@
 <?php
 include('header.php');
-
-if (!isset($_COOKIE['cookie_name'])) {
-} else {
-}
-
 ?>
 
 
 <div class="d-flex justify-content-evenly" style="height:88vh; background-color: rgb(170, 159, 91)">
 
-
-    <div class="col-4 h-auto d-inline-block my-4 rounded-5 border-3" style="background-color:white  <?php if ($variable === false) {
-                                                                                                        echo 'opacity: 0.5;';
-                                                                                                    } ?>">
+    <!-- AI Lawyer -->
+    <div class="col-4 h-auto d-inline-block my-4 rounded-5 border-3 <?php if (!isset($_COOKIE['signedIn'])) {
+                                                                        echo ('opacity-50');
+                                                                    } ?>" style="background-color:white">
         <div class="h-100 m-1 rounded-5" style="background-color: rgb(80, 104, 148);">
             <div class="d-inline-flex m-4">
                 <input class="col-12 input-group-text rounded-5" placeholder="Ask our robot lawyer...">
@@ -23,7 +18,6 @@ if (!isset($_COOKIE['cookie_name'])) {
                 AI Lawyer Response
             </div>
         </div>
-
     </div>
 
     <!-- Document Viewer -->

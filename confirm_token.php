@@ -11,18 +11,10 @@
 
 <body class="container align-middle justify-content-center" style="background-image: url(./Courthouse.jpg); background-size:cover; background-position:center -100px">
     <h3 class="text-center" style="margin-top: 50px; font-family:Georgia, 'Times New Roman', Times, serif">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3>
-    <form class="text-center m-5" action="logintest.php" method="POST">
-        <h1 class="card-title" style="font-family:Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</h1>
 
-        <h3 class="card-title my-3" style="font-family:Georgia, 'Times New Roman', Times, serif">Type your account email below, and we will send you a link to reset your password.</h3>
+    <h2>Your token has been confirmed and a cookie has been set. Please return back to our landing page:</h2>
+    <button class="btn btn-secondary mx-4" href="index.php">Landing Page</button>
 
-        <div class="mb-3 m-5">
-            <input name="Email" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter Email" required>
-        </div>
-
-        <button name="Enter" type="submit" value="submit" class="btn btn-primary">Submit</button>
-
-    </form>
 </body>
 
 </html>
