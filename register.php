@@ -31,12 +31,25 @@
 
     </form>
     <?php
+
     if (isset($_POST['Enter'])) {
         $email = $_POST['Email'];
         $password = $_POST['Password'];
         $confirm_password = $_POST['Confirm Password'];
         if ($password != $confirm_password) {
             echo "<h2>Passwords do not match</h2>";
+        }
+    }  else {
+        // Check if password meets criteria
+        if (strlen($password) < 8 || !preg_match("/[A-Z]/", $password) 
+        || !preg_match("/[0-9]/", $password) || !preg_match("/[^A-Za-z0-9]/", $password)) {
+            echo "<h2>Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character.</h2>";
+        } else {
+            // Connect to Supabase and register user
+            // Assuming you have the Supabase client initialized and ready to use
+            $supabase->table('ld4nj.sub_user')->insert(['email' => $email, 'password' => $password])->execute();
+            send_confirmation_email($email);
+            echo "<h2>Registration successful. Please check your email to confirm your account.</h2>";
         }
     }
     ?>
