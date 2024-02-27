@@ -1,5 +1,10 @@
 <?php
 include('header.php');
+
+if (!isset($_COOKIE['cookie_name'])) {
+} else {
+}
+
 ?>
 
 <body>
