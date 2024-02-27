@@ -8,8 +8,7 @@ app = Flask(__name__)
 # Supabase Connection
 NEXT_PUBLIC_SUPABASE_URL = 'https://zwmhjgftwvkcdirgvxwj.supabase.co'
 NEXT_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3bWhqZ2Z0d3ZrY2Rpcmd2eHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDkwNTQ2NTAsImV4cCI6MjAyNDYzMDY1MH0.Of7v3vo-zPdfTbN2o9vfk5_U3kEtMUTo1tS-JQDlOmI'
-supabase = create_client(NEXT_PUBLIC_SUPABASE_URL,
-                         NEXT_PUBLIC_SUPABASE_ANON_KEY)
+supabase = create_client(NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
 # Mailtrap Connection
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -41,8 +40,7 @@ def send_confirmation_email(email):
     supabase.table('ld4nj.sub_user').insert(
         {'email': email, 'confirmation_token': token}).execute()  # Store token in Supabase
 
-    msg = Message('Confirm Your Email',
-                  sender='noreply@lawdigestNJ.com', recipients=[email])
+    msg = Message('Confirm Your Email', sender='noreply@lawdigestNJ.com', recipients=[email])
     msg.body = f'Please click the following link to confirm your email: {url_for('confirm_token.php', token=token, _external=True)}'
     mail.send(msg)
 
