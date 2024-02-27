@@ -55,16 +55,18 @@ def register():
     email = request.form['Email']
     password = request.form['Password']
 
-    # Check if email is already registered
-    user_exists = supabase.table('ld4nj.sub_user').select(
-        'email').eq('email', email).execute()
+    print("Hello World")
 
-    if user_exists:
-        return 'Email already registered'
-    else:
-        hash = hash_password(password)
-        send_confirmation_email(email, hash)
-        return 'Registration successful. Please check your email to confirm your account.'
+    # # Check if email is already registered
+    # user_exists = supabase.table('ld4nj.sub_user').select(
+    #     'email').eq('email', email).execute()
+
+    # if user_exists:
+    #     return 'Email already registered'
+    # else:
+    #     hash = hash_password(password)
+    #     send_confirmation_email(email, hash)
+    #     return 'Registration successful. Please check your email to confirm your account.'
 
 
 @app.route("/login", methods=['POST'])
