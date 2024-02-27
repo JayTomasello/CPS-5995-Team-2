@@ -11,7 +11,7 @@
 
 <body class="container align-middle justify-content-center" style="background-image: url(./Courthouse.jpg); background-size:cover; background-position:center -100px">
     <h3 class="text-center" style="margin-top: 50px; font-family:Georgia, 'Times New Roman', Times, serif">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3>
-    <form class="text-center m-5" action="logintest.php" method="POST">
+    <form class="text-center m-5" action="newuser.php" method="POST">
         <h1 class="card-title" style="font-family:Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</h1>
 
         <div class="mb-3">
@@ -22,13 +22,24 @@
             <input name="Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Enter Password" required>
         </div>
 
-        <a class="btn-btn-secondary mx-2" href="./newpass.php">Forgot Password?</a>
+        <div class="mb-3">
+            <input name="Confirm Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Confirm Password" required>
+        </div>
 
-        <a class="btn-btn-secondary mx-2" href="./register.php">Sign Up</a>
 
-        <button name="login" type="submit" value="submit" class="btn btn-primary mx-5">Submit</button>
+        <button name="Enter" type="submit" value="submit" class="btn btn-primary">Submit</button>
+
     </form>
-
+    <?php
+    if (isset($_POST['Enter'])) {
+        $email = $_POST['Email'];
+        $password = $_POST['Password'];
+        $confirm_password = $_POST['Confirm Password'];
+        if ($password != $confirm_password) {
+            echo "<h2>Passwords do not match</h2>";
+        }
+    }
+    ?>
 </body>
 
 </html>
