@@ -11,21 +11,8 @@
 
 <body class="container align-middle justify-content-center" style="background-image: url(./Courthouse.jpg); background-size:cover; background-position:center -100px">
     <h3 class="text-center" style="margin-top: 50px; font-family:Georgia, 'Times New Roman', Times, serif">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3>
-    <form class="text-center m-5" action="logintest.php" method="POST">
-        <h1 class="card-title" style="font-family:Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</h1>
 
-        <div class="mb-3">
-            <input name="Email" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter Email" required>
-        </div>
 
-        <div class="mb-3">
-            <input name="Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Enter Password" required>
-        </div>
-
-        <button name="forgot_pass" type="submit" value="submit" class="btn btn-secondary mx-2" href="./newpass.php">Forgot Password?</button>
-        <button name="register" type="submit" value="submit" class="btn btn-secondary mx-2" href="./register.php">Sign Up</button>
-        <button name="login" type="submit" value="submit" class="btn btn-primary mx-5">Submit</button>
-    </form>
 </body>
 
 </html>

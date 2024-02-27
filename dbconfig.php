@@ -1,17 +1,9 @@
 <?php
+$username = "postgres.zwmhjgftwvkcdirgvxwj";
+$password = "Wereits0easy!";
+$host = "aws-0-us-east-1.pooler.supabase.com";
+$port = 5432;
+$dbname = "postgres";
 
-# Defines the details of the target database
-$host = "localhost";
-$username = "root";
-$password = "";
-$dbname = "";
-
-# Makes the connection with the target database
-$con = mysqli_connect($host, $username, $password, $dbname)
+$con = mysqli_connect($username, $password, $host, $port, $dbname)
     or die("<br>Cannot connect to DB:$dbname on $host\n");
-
-/* In other files, include this line of code to establish the connection:
-
-include "dbconfig.php";
-
-*/

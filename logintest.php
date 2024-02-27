@@ -1,16 +1,10 @@
 <?php
 include "dbconfig.php";
 
-if (isset($_POST["Email"]) && isset($_POST["Password"]) && isset($_POST["Enter"]) && !isset($_COOKIE["signedIn"])) {
+if (isset($_POST["Email"]) && isset($_POST["Password"]) && isset($_POST["Login"]) && !isset($_COOKIE["signedIn"])) {
     $email = mysqli_real_escape_string($con, $_POST["Email"]);
     $password = mysqli_real_escape_string($con, $_POST["Password"]);
 
-    $sql_email = "SELECT 'cps5301t3.administrator' AS source_table, Fname, Lname, AID AS ID, Email, Password FROM cps5301t3.administrator
-    WHERE Email = '" . $email . "' AND Password = '" . $password . "' UNION ALL
-    SELECT 'cps5301t3.faculty' AS source_table, Fname, Lname, FID AS ID, Email, Password FROM cps5301t3.faculty
-    WHERE Email = '" . $email . "' AND Password = '" . $password . "' UNION ALL
-    SELECT 'cps5301t3.student' AS source_table, Fname, Lname, SID AS ID, Email, Password FROM cps5301t3.student
-    WHERE Email = '" . $email . "' AND Password = '" . $password . "'";
 
     $result = mysqli_query($con, $sql_email);
 

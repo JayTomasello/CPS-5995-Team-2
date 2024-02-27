@@ -1,5 +1,5 @@
 <?php
-include('dbconfig.php');
+include('flaskconfig.py');
 
 // Test Cookie for development
 $_COOKIE = false;
