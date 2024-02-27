@@ -22,9 +22,9 @@
             <input name="Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Enter Password" required>
         </div>
 
-        <a class="btn-btn-secondary mx-2" href="./newpass.php">Forgot Password?</a>
+        <a type="button" class="btn btn-secondary mx-2" href="./newpass.php">Forgot Password?</a>
 
-        <a class="btn-btn-secondary mx-2" href="./register.php">Sign Up</a>
+        <a type="button" class="btn btn-secondary mx-2" href="./register.php">Sign Up</a>
 
         <button name="login" type="submit" value="submit" class="btn btn-primary mx-5">Submit</button>
     </form>
