@@ -31,6 +31,9 @@
     </form>
 
     <?php
+
+use function PHPSTORM_META\type;
+
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (isset($_POST['Enter'])) {
             $email = $_POST['Email'];
@@ -46,7 +49,9 @@
                 ) {
                     echo "<h2 class='text-center'>Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character.</h2>";
                 } else {
-                    echo "<h2 class='text-center'>Account created successfully!  We have sent a confirmation email to your address.</h2>";
+                    echo "<h2 class='text-center'>Account created successfully!</h2>";
+                    $command = "python userrRegistration.py $email $password";
+                    exec($command, $output, $return_var);
                 }
             }
         }
