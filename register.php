@@ -11,7 +11,7 @@
 
 <body class="container align-middle justify-content-center" style="background-image: url(./Courthouse.jpg); background-size:cover; background-position:center -100px">
     <h3 class="text-center" style="margin-top: 50px; font-family:Georgia, 'Times New Roman', Times, serif">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3>
-    <form class="text-center m-5" method="POST">
+    <form class="text-center m-5" action="register.php" method="POST">
         <h1 class="card-title" style="font-family:Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</h1>
 
         <div class="mb-3">
@@ -45,6 +45,8 @@
                     || !preg_match("/[0-9]/", $password) || !preg_match("/[^A-Za-z0-9]/", $password)
                 ) {
                     echo "<h2 class='text-center'>Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character.</h2>";
+                } else {
+                    echo "<h2 class='text-center'>Account created successfully!  We have sent a confirmation email to your address.</h2>";
                 }
             }
         }

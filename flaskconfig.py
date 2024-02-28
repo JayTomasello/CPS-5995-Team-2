@@ -57,7 +57,7 @@ def register():
 
     print("Hello World")
 
-    # # Check if email is already registered
+    # Check if email is already registered
     # user_exists = supabase.table('ld4nj.sub_user').select(
     #     'email').eq('email', email).execute()
 
@@ -74,18 +74,20 @@ def login():
     email = request.form['Email']
     password = request.form['Password']
 
-    # Check if user exists:
-    user = supabase.table('ld4nj.sub_user').select(
-        'email', 'password').eq('email', email).execute()
+    print("Hello World")
 
-    if user:
-        if user['password'] == hash_password(password):
-            # Set a cookie to remember the user
-            response = app.make_response('Login successful')
-            response.set_cookie('signedIn', email)
-            return response
-        else:
-            return 'Invalid password'
+    # # Check if user exists:
+    # user = supabase.table('ld4nj.sub_user').select(
+    #     'email', 'password').eq('email', email).execute()
+
+    # if user:
+    #     if user['password'] == hash_password(password):
+    #         # Set a cookie to remember the user
+    #         response = app.make_response('Login successful')
+    #         response.set_cookie('signedIn', email)
+    #         return response
+    #     else:
+    #         return 'Invalid password'
 
 
 @app.route('/confirm_email/<token>')
