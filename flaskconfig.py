@@ -46,8 +46,10 @@ def send_confirmation_email(email, password):
 
     msg = Message('Confirm Your Email',
                   sender='noreply@lawdigestNJ.com', recipients=[email])
-    msg.body = f'Please click the following link to confirm your email: {app.url_for("confirm_email", token=token, _external=True)}'
+    msg.body = f'Please click the following link to confirm your email:'
     mail.send(msg)
+
+# {app.url_for("confirm_email", token=token, _external=True)}
 
 
 @app.route("/register.php", methods=['POST'])
@@ -55,18 +57,16 @@ def register():
     email = request.form['Email']
     password = request.form['Password']
 
-    print("Hello World")
-
     # Check if email is already registered
-    # user_exists = supabase.table('ld4nj.sub_user').select(
-    #     'email').eq('email', email).execute()
+    user_exists = supabase.table('ld4nj.sub_user').select(
+        'email').eq('email', email).execute()
 
-    # if user_exists:
-    #     return 'Email already registered'
-    # else:
-    #     hash = hash_password(password)
-    #     send_confirmation_email(email, hash)
-    #     return 'Registration successful. Please check your email to confirm your account.'
+    if user_exists:
+        return 'Email already registered'
+    else:
+        hash = hash_password(password)
+        send_confirmation_email(email, hash)
+        return 'Registration successful. Please check your email to confirm your account.'
 
 
 @app.route("/login.php", methods=['POST'])
