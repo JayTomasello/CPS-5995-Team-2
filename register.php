@@ -23,7 +23,7 @@
         </div>
 
         <div class="mb-3">
-            <input name="Confirm Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Confirm Password" required>
+            <input name="Confirm_Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Confirm Password" required>
         </div>
 
 
@@ -35,7 +35,7 @@
         if (isset($_POST['Enter'])) {
             $email = $_POST['Email'];
             $password = $_POST['Password'];
-            $confirm_password = $_POST['Confirm Password'];
+            $confirm_password = $_POST['Confirm_Password'];
             if ($password != $confirm_password) {
                 echo "<h2>Passwords do not match</h2>";
             } else {

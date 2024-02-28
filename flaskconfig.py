@@ -55,7 +55,7 @@ def register():
     email = request.form['Email']
     password = request.form['Password']
 
-    return "Hello, World!"
+    print("Hello World")
 
     # # Check if email is already registered
     # user_exists = supabase.table('ld4nj.sub_user').select(
