@@ -20,19 +20,23 @@ def hash_password(password):
 
     return hashed_password
 
-def emailCheck(supabase):
-    email = "testemail@gmail.com"
-    password = "123"
-    # # Check if user exists:
-    user = supabase.table('ld4nj.sub_user').select('email', 'password').eq('email', email).execute()
+def userRegistration(supabase, email, password, token):
 
+    if email:
+         if password:
+             # Set a cookie to remember the user
+            h_password = hash_password(password)
+            data = {"email": email, "password": h_password, "token": token}
+            response = supabase.table("sub_user").insert(data).execute()
+            return response
+         else:
+             return 'Invalid password: No Password Provided'
+    else:
+        return 'Invalid email: Mo Email Provided'
+    
 
-    if user:
-        if user['password'] == password:
-            # Set a cookie to remember the user
-            print("User logged in successfully!")
-        else:
-            print("Incorrect password")
+        
+
 
 
 if __name__ == "__main__":
@@ -40,4 +44,7 @@ if __name__ == "__main__":
     url: str = 'https://zwmhjgftwvkcdirgvxwj.supabase.co'
     key: str =  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3bWhqZ2Z0d3ZrY2Rpcmd2eHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDkwNTQ2NTAsImV4cCI6MjAyNDYzMDY1MH0.Of7v3vo-zPdfTbN2o9vfk5_U3kEtMUTo1tS-JQDlOmI'
     supabase: Client = create_client(url, key)
-    emailCheck(supabase)
+    email = "testemail3@gmail.com"
+    password = "1234"
+    response = userRegistration(supabase, email, password, "")
+    print(response)
