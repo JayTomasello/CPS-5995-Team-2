@@ -13,14 +13,14 @@ supabase = create_client(NEXT_PUBLIC_SUPABASE_URL,
                          NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
 # Gmail Connection
-app.config['MAIL_SERVER'] = 'imap.gmail.com'
-app.config['MAIL_PORT'] = 993
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'matthewfernandez0@gmail.com'
 app.config['MAIL_PASSWORD'] = '$yZal$%3PT8U0e2fDLn2'
-app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = True
 app.config['SECRET_KEY'] = os.urandom(24)  # Generate a secret key for Flask
-mail = Mail(app)
+mail = Mail(app=app)
 
 
 def hash_password(password):
@@ -39,17 +39,14 @@ def hash_password(password):
     return hashed_password
 
 
-def send_confirmation_email(email, password):
+# def send_confirmation_email(email, password):
     token = os.urandom(16).hex()  # Generate a random token
-    supabase.table('ld4nj.sub_user').insert(
-        {'email': email, 'password': password, 'confirmation_token': token}).execute()  # Store token in Supabase
+#     supabase.table('ld4nj.sub_user').insert(
+#         {'email': email, 'password': password, 'confirmation_token': token}).execute()  # Store token in Supabase
 
-    msg = Message('Confirm Your Email',
-                  sender='noreply@lawdigestNJ.com', recipients=[email])
-    msg.body = f'Please click the following link to confirm your email:'
-    mail.send(msg)
-
-# {app.url_for("confirm_email", token=token, _external=True)}
+#     msg = Message('Confirm Your Email', recipients=[
+#                   email], sender='noreply@lawdigestNJ.com', body = f'Please click the following link to confirm your email:{app.url_for("confirm_email", token=token, _external=True)}'
+#     Mail.send(msg)
 
 
 @app.route("/register.php", methods=['POST'])
@@ -65,6 +62,10 @@ def register():
         return 'Email already registered'
     else:
         hash = hash_password(password)
+        token = os.urandom(16).hex()  # Generate a random token
+
+        supabase.table('ld4nj.sub_user').insert(
+            {'email': email, 'password': password, 'confirmation_token': token}).execute()  # Store token in Supabase
         send_confirmation_email(email, hash)
         return 'Registration successful. Please check your email to confirm your account.'
 
