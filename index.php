@@ -100,8 +100,6 @@ include('header.php');
 </script>
 
 
-
-
 <div class="d-flex justify-content-evenly" style="height:88vh; background-color: rgb(170, 159, 91)">
 
     <!-- AI Lawyer -->
