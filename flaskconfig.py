@@ -13,12 +13,12 @@ supabase = create_client(NEXT_PUBLIC_SUPABASE_URL,
                          NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
 # Gmail Connection
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
+app.config['MAIL_SERVER'] = 'imap.gmail.com'
+app.config['MAIL_PORT'] = 993
 app.config['MAIL_USERNAME'] = 'matthewfernandez0@gmail.com'
 app.config['MAIL_PASSWORD'] = '$yZal$%3PT8U0e2fDLn2'
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
 app.config['SECRET_KEY'] = os.urandom(24)  # Generate a secret key for Flask
 mail = Mail(app)
 
