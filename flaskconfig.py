@@ -66,7 +66,7 @@ def register():
 
         supabase.table('ld4nj.sub_user').insert(
             {'email': email, 'password': password, 'confirmation_token': token}).execute()  # Store token in Supabase
-        send_confirmation_email(email, hash)
+        # send_confirmation_email(email, hash)
         return 'Registration successful. Please check your email to confirm your account.'
 
 
