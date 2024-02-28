@@ -81,7 +81,7 @@ def login():
     if user:
         if user['password'] == hash_password(password):
             # Set a cookie to remember the user
-            response = make_response('Login successful')
+            response = app.make_response('Login successful')
             response.set_cookie('signedIn', email)
             return response
         else:
