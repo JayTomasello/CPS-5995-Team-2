@@ -61,12 +61,13 @@ def register():
     if user_exists:
         return 'Email already registered'
     else:
-        hash = hash_password(password)
+        hashed_password = hash_password(password)  # Hash the password
         token = os.urandom(16).hex()  # Generate a random token
 
+        # Insert user data into the Supabase table
         supabase.table('ld4nj.sub_user').insert(
-            {'email': email, 'password': password, 'confirmation_token': token}).execute()  # Store token in Supabase
-        # send_confirmation_email(email, hash)
+            {'email': email, 'password': hashed_password, 'confirmation_token': token}).execute()
+
         return 'Registration successful. Please check your email to confirm your account.'
 
 
