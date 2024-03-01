@@ -42,7 +42,6 @@
             if ($password != $confirm_password) {
                 echo "<h2>Passwords do not match</h2>";
             } else {
-                // Check if password meets criteria
                 if (
                     strlen($password) < 8 || !preg_match("/[A-Z]/", $password)
                     || !preg_match("/[0-9]/", $password) || !preg_match("/[^A-Za-z0-9]/", $password)
