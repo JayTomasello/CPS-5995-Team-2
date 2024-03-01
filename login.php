@@ -35,7 +35,7 @@
             $password = $_POST['Password'];
             $command = "python userLogin.py $email $password";
             exec($command, $output, $return_var);
-            if ($return_var != null) {
+            if ($return_var != null) {}
                 setcookie("email", $email, time() + 3600, "/");
                 header("Location: /index.php");
             } else {
