@@ -1,12 +1,3 @@
-<?php
-
-
-
-
-
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,9 +10,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 
-<nav class="navbar navbar-expand-lg bg" style="background-color:white; height:12vh">
+<nav class="navbars navbar-expand-lg bg vw-100" style="background-color:white; height:15vh">
 
-    <div class="container-fluid d-flex justify-content-start">
+    <div class="navbar-brand container-fluid d-`flex justify-content-start">
 
         <img src="../NJLawDigest Logo.png" class="img me-4" width="100px" alt="...">
         <label class="navbar-brand fs-1 text-dark me-4" style="font-family: Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</label>

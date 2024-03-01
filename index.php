@@ -1,3 +1,7 @@
+<?php
+include('header.php');
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,13 +36,14 @@
         #popup-box button {
             margin-right: 10px;
         }
+
     </style>
 </head>
 <body>
 
-<div id="overlay"></div>
+<div id="overlay" class="z-2" style="background-color: rgba(0, 0, 0, 0.5)"></div>
 
-<div id="popup-box">
+<div id="popup-box" class="z-3" style="background-color: white">
     <h1>DISCLAIMER</h1>
     <p>The content presented on Legal Digest 4 New Jersey should not be construed as legal advice and is not meant to serve as such. Rather, all materials, content, and information provided here are intended for general informational purposes only.</p><br>
 
@@ -55,8 +60,8 @@
     <p>By accepting this agreement and using this website, you agree that you have read and understand the above disclaimer. The owners, operators, and stakeholders of this website are in no way responsible for any actions taken or damages resulting from referring to the information on Legal Digest 4 New Jersey.
 
     </p><br>
-    <button id="agree-btn">Agree</button>
-    <button id="disagree-btn">Disagree</button>
+    <button id="agree-btn" class="btn btn-primary mx-2">Agree</button>
+    <button id="disagree-btn" class="btn btn-primary mx-2">Disagree</button>
 </div>
 
 <script>
@@ -93,10 +98,6 @@
         popupBox.style.display = 'block';
     };
 </script>
-
-<?php
-include('header.php');
-?>
 
 
 <div class="d-flex justify-content-evenly" style="height:88vh; background-color: rgb(170, 159, 91)">

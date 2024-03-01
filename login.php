@@ -28,6 +28,23 @@
 
         <button name="login" type="submit" value="submit" class="btn btn-primary mx-5">Submit</button>
     </form>
+    <?php
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (isset($_POST['login'])) {
+            $email = $_POST['Email'];
+            $password = $_POST['Password'];
+            $command = "python userLogin.py $email $password";
+            exec($command, $output, $return_var);
+            if ($return_var != null) {
+                setcookie("email", $email, time() + 3600, "/");
+                header("Location: /index.php");
+            } else {
+                echo "<h2 class='text-center'>Login failed!</h2>";
+            }
+        }
+    }
+    
+    ?>
 
 </body>
 

@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, render_template, flash, session
+from flask import Flask, request, response
 from flask_mail import Mail, Message
 from supabase import create_client, Client
 import hashlib
@@ -79,18 +79,18 @@ def login():
 
     print("Hello World")
 
-    # # Check if user exists:
-    # user = supabase.table('ld4nj.sub_user').select(
-    #     'email', 'password').eq('email', email).execute()
+    # Check if user exists:
+    user = supabase.table('ld4nj.sub_user').select(
+        'email', 'password').eq('email', email).execute()
 
-    # if user:
-    #     if user['password'] == hash_password(password):
-    #         # Set a cookie to remember the user
-    #         response = app.make_response('Login successful')
-    #         response.set_cookie('signedIn', email)
-    #         return response
-    #     else:
-    #         return 'Invalid password'
+    if user:
+        if user['password'] == hash_password(password):
+            # Set a cookie to remember the user
+            response = app.make_response('Login successful')
+            response.set_cookie('signedIn', email)
+            return response
+        else:
+            return 'Invalid password'
 
 
 @app.route('/confirm_email/<token>')
