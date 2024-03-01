@@ -1,6 +1,6 @@
 from flask import Flask, request, response
 from flask_mail import Mail, Message
-from supabase import create_client
+from supabase import create_client, Client
 import hashlib
 import os
 
@@ -9,8 +9,8 @@ app = Flask(__name__)
 # Supabase Connection
 NEXT_PUBLIC_SUPABASE_URL = 'https://zwmhjgftwvkcdirgvxwj.supabase.co'
 NEXT_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3bWhqZ2Z0d3ZrY2Rpcmd2eHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDkwNTQ2NTAsImV4cCI6MjAyNDYzMDY1MH0.Of7v3vo-zPdfTbN2o9vfk5_U3kEtMUTo1tS-JQDlOmI'
-supabase = create_client(NEXT_PUBLIC_SUPABASE_URL,
-                         NEXT_PUBLIC_SUPABASE_ANON_KEY)
+supabase: Client = create_client(NEXT_PUBLIC_SUPABASE_URL,
+                                 NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
 # Gmail Connection
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -49,26 +49,27 @@ def hash_password(password):
 #     Mail.send(msg)
 
 
-@app.route("/register.php", methods=['POST'])
+@app.route("/register", methods=['POST', 'GET'])
 def register():
     email = request.form['Email']
     password = request.form['Password']
 
-    # Check if email is already registered
-    user_exists = supabase.table('ld4nj.sub_user').select(
-        'email').eq('email', email).execute()
+    if request.method == 'POST':
+        # Check if email is already registered
+        user_exists = supabase.from_('sub_user').select(
+            '*').eq('email', email).execute()
 
-    if user_exists:
-        return 'Email already registered'
-    else:
-        hashed_password = hash_password(password)  # Hash the password
-        token = os.urandom(16).hex()  # Generate a random token
+        if user_exists:
+            return 'Email already registered'
+        else:
+            hashed_password = hash_password(password)  # Hash the password
+            token = os.urandom(16).hex()  # Generate a random token
+0
+            # Insert user data into the Supabase table
+            data, count = supabase.table('sub_user').insert(
+                {'email': email, 'password': hashed_password, 'confirmation_token': token}).execute()
 
-        # Insert user data into the Supabase table
-        supabase.table('ld4nj.sub_user').insert(
-            {'email': email, 'password': hashed_password, 'confirmation_token': token}).execute()
-
-        return 'Registration successful. Please check your email to confirm your account.'
+        return 
 
 
 @app.route("/login.php", methods=['POST'])
