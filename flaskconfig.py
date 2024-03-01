@@ -7,10 +7,9 @@ import os
 app = Flask(__name__)
 
 # Supabase Connection
-NEXT_PUBLIC_SUPABASE_URL = 'https://zwmhjgftwvkcdirgvxwj.supabase.co'
-NEXT_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3bWhqZ2Z0d3ZrY2Rpcmd2eHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDkwNTQ2NTAsImV4cCI6MjAyNDYzMDY1MH0.Of7v3vo-zPdfTbN2o9vfk5_U3kEtMUTo1tS-JQDlOmI'
-supabase: Client = create_client(NEXT_PUBLIC_SUPABASE_URL,
-                                 NEXT_PUBLIC_SUPABASE_ANON_KEY)
+url: str = 'https://zwmhjgftwvkcdirgvxwj.supabase.co'
+key: str = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3bWhqZ2Z0d3ZrY2Rpcmd2eHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDkwNTQ2NTAsImV4cCI6MjAyNDYzMDY1MH0.Of7v3vo-zPdfTbN2o9vfk5_U3kEtMUTo1tS-JQDlOmI'
+supabase: Client = create_client(url, key)
 
 # Gmail Connection
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -39,58 +38,72 @@ def hash_password(password):
     return hashed_password
 
 
-# def send_confirmation_email(email, password):
-    token = os.urandom(16).hex()  # Generate a random token
-#     supabase.table('ld4nj.sub_user').insert(
-#         {'email': email, 'password': password, 'confirmation_token': token}).execute()  # Store token in Supabase
+def userRegistration(supabase, email, password, token):
 
-#     msg = Message('Confirm Your Email', recipients=[
-#                   email], sender='noreply@lawdigestNJ.com', body = f'Please click the following link to confirm your email:{app.url_for("confirm_email", token=token, _external=True)}'
-#     Mail.send(msg)
-
-
-@app.route("/register", methods=['POST', 'GET'])
-def register():
-    email = request.form['Email']
-    password = request.form['Password']
-
-    if request.method == 'POST':
-        # Check if email is already registered
-        user_exists = supabase.from_('sub_user').select(
-            '*').eq('email', email).execute()
-
-        if user_exists:
-            return 'Email already registered'
-        else:
-            hashed_password = hash_password(password)  # Hash the password
-            token = os.urandom(16).hex()  # Generate a random token
-0
-            # Insert user data into the Supabase table
-            data, count = supabase.table('sub_user').insert(
-                {'email': email, 'password': hashed_password, 'confirmation_token': token}).execute()
-
-        return 
-
-
-@app.route("/login.php", methods=['POST'])
-def login():
-    email = request.form['Email']
-    password = request.form['Password']
-
-    print("Hello World")
-
-    # Check if user exists:
-    user = supabase.table('ld4nj.sub_user').select(
-        'email', 'password').eq('email', email).execute()
-
-    if user:
-        if user['password'] == hash_password(password):
+    if email:
+        if password:
             # Set a cookie to remember the user
-            response = app.make_response('Login successful')
-            response.set_cookie('signedIn', email)
+            h_password = hash_password(password)
+            data = {"email": email, "password": h_password, "token": token}
+            response = supabase.table("sub_user").insert(data).execute()
             return response
         else:
-            return 'Invalid password'
+            return 'Invalid password: No Password Provided'
+    else:
+        return 'Invalid email: No Email Provided'
+
+
+def userLogin(supabase, email, password):
+
+    if email:
+        if password:
+            # Set a cookie to remember the user
+            h_password = hash_password(password)
+            response = None
+            try:
+                response = supabase.table('sub_user').select(
+                    'email', 'password').eq('email', email).execute()
+            except:
+                return 'User not found'
+            print(response.data[0]['password'])
+            if response.data[0]['password'] == h_password:
+
+                return response
+            else:
+                return 'Incorrect password'
+
+        else:
+            return 'Invalid password: No Password Provided'
+    else:
+        return 'Invalid email: Mo Email Provided'
+
+
+def userDeregister(supabase, email, password, token):
+
+    if email:
+        if password:
+            # Set a cookie to remember the user
+            h_password = hash_password(password)
+            response = None
+            try:
+                response = supabase.table('sub_user').select(
+                    'email', 'password').eq('email', email).execute()
+            except:
+                return 'User not found'
+            print(response.data[0]['password'])
+            if response.data[0]['password'] == password:
+                print("User Exists!")
+                data = supabase.table('sub_user').delete().eq(
+                    'email', email).execute()
+                return data
+
+            else:
+                return 'Incorrect password'
+
+        else:
+            return 'Invalid password: No Password Provided'
+    else:
+        return 'Invalid email: Mo Email Provided'
 
 
 @app.route('/confirm_email/<token>')
