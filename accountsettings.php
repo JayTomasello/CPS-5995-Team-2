@@ -1,3 +1,22 @@
+<?php
+// Was deregister comitted?
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deregister'])) {
+    // Include userDeregister.py script
+    $command = "python userDeregister.py " . $_COOKIE['email']; //makes command to execute the deregister
+    exec($command, $output, $return_var);
+    // Were they deregistered?
+    if ($return_var === 0) {
+        // Delete cookie
+        setcookie("email", "", time() - 3600, "/");
+        // Redirect to home
+        header("Location: /index.php");
+        exit();
+    } else {
+        echo "<h2 class='text-center'>Failed to deregister user.</h2>";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
