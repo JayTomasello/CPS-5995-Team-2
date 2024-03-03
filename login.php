@@ -35,14 +35,15 @@
             $password = $_POST['Password'];
             $command = "python userLogin.py $email $password";
             exec($command, $output, $return_var);
-            if ($return_var != null) {}
-                setcookie("email", $email, time() + 3600, "/");
-                header("Location: /index.php");
-            } else {
-                echo "<h2 class='text-center'>Login failed!</h2>";
+            if ($return_var != null) {
             }
+            setcookie("email", $email, time() + 3600, "/");
+            header("Location: /index.php");
+        } else {
+            echo "<h2 class='text-center'>Login failed!</h2>";
         }
-    
+    }
+
     ?>
 
 </body>

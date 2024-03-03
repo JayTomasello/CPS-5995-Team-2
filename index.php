@@ -27,12 +27,17 @@ if (!isset($_COOKIE['signedIn']) && ($_SESSION['agree'] !== TRUE)) {
 }
 ?>
 
-<div class="d-flex justify-content-evenly vh-75 vw-100" style="height:88vh; background-color: rgb(170, 159, 91)">
+<div class="d-flex justify-content-evenly vh-100" style="background-color: rgb(170, 159, 91)">
+
 
     <!-- AI Lawyer -->
-    <div class="col-4 h-auto d-inline-block my-4 rounded-5 border-3 <?php if (!isset($_COOKIE['signedIn'])) {
-                                                                        echo ('opacity-50');
-                                                                    } ?>" style="background-color:white">
+
+    <div class="col-4 h-auto d-inline-block my-4 rounded-5 border-3" style="background-color:white">
+        <?php
+        if (!isset($_COOKIE['signedIn'])) {
+            echo ('<div class"position-relative w-100 h-100 opacity-50 bg-black"></div>');
+        }
+        ?>
         <div class="h-100 m-1 rounded-5" style="background-color: rgb(80, 104, 148);">
             <div class="d-inline-flex m-4">
                 <input class="col-12 input-group-text rounded-5 disabled" placeholder="Ask our robot lawyer...">

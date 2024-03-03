@@ -14,16 +14,16 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 
-<body class="vh-100 vw-100">
+<body>
     <?php
     if (!isset($_COOKIE['signedIn']) && ($_SESSION['agree'] !== TRUE)) {
-        echo ('<div class="z-2 position-absolute w-100 h-100 opacity-50" style="background-color:black"></div>');
+        echo ('<div class="z-2 position-absolute w-100 h-100 opacity-50 bg-black"</div>');
     }
     ?>
 
-    <nav class="navbars navbar-expand-lg bg vh-25 vw-100" style="background-color:white">
+    <nav class="navbar navbar-expand-lg bg-white">
 
-        <div class="navbar-brand container-fluid d-`flex justify-content-start">
+        <div class="container-fluid justify-content-start">
 
             <img src="../NJLawDigest Logo.png" class="img me-4" width="100px" alt="...">
             <label class="navbar-brand fs-1 text-dark me-4" style="font-family: Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</label>
@@ -138,10 +138,27 @@ session_start();
         </div>
 
         <div class="container-fluid justify-content-end">
+            <?php
+            if (isset($_COOKIE['signedIn'])) {
+                echo ('<label class="navbar-brand fs-4 text-dark me-4" style="font-family: Georgia, ' . 'Times New Roman' . ' , Times, serif">Welcome, ' . $_COOKIE['signedIn'] . '.</label>
+                <img src="./User Icon.png" class="img" width="50px" alt="...">
+                <a type="button" class="btn btn-secondary mx-4" href="logout.php">Logout?</a>
+                <button class="btn-group m-2"> 
+                    <img src="./settings.png" class="img" width="50px" alt="...">
+                    <label class="fs-1">Settings</label>                
+                </button>                
+                ');
+            } else {
+                echo ('<label class="navbar-brand fs-4 text-dark me-4" style="font-family: Georgia, ' . 'Times New Roman' . ' , Times, serif">Welcome, Guest.</label>
+                    <img src="./User Icon.png" class="img" width="50px" alt="...">
+                    <a type="button" class="btn btn-secondary mx-4" href="login.php">Login?</a>
+                ');
+            }
 
-            <label class="navbar-brand fs-4 text-dark me-4" style="font-family: Georgia, 'Times New Roman', Times, serif">Welcome, Guest.</label>
-            <img src="./User Icon.png" class="img" width="50px" alt="...">
-            <a type="button" class="btn btn-secondary mx-4" href="login.php">Login?</a>
+            ?>
+
+
+
 
         </div>
     </nav>

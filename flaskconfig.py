@@ -54,7 +54,7 @@ def userRegistration(supabase, email, password, token):
         return 'Invalid email: No Email Provided'
 
 
-@app.route('login', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def userLogin(supabase, email, password):
 
     if email:
@@ -69,7 +69,6 @@ def userLogin(supabase, email, password):
                 return 'User not found'
             print(response.data[0]['password'])
             if response.data[0]['password'] == h_password:
-
                 return response
             else:
                 return 'Incorrect password'
@@ -78,6 +77,23 @@ def userLogin(supabase, email, password):
             return 'Invalid password: No Password Provided'
     else:
         return 'Invalid email: Mo Email Provided'
+
+
+@app.route('/forgot_password', methods=['POST'])
+def resetPassword(supabase, email, new_password):
+    if email:
+        if new_password:
+            h_password = hash_password(new_password)
+            response = supabase.table('sub_user').update(
+                {'password': h_password}).eq('email', email).execute()
+            return response
+        else:
+            return 'Invalid password: No Password Provided'
+    else:
+        return 'Invalid email: No Email Provided'
+
+@app.route('/logout', methods=['POST'])
+def logout():
 
 
 @app.route('/confirm_email/<token>')
