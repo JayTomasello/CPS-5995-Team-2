@@ -3,7 +3,7 @@ include('header.php');
 ?>
 
 <?php
-if (!isset($_COOKIE['signedIn']) && ($_SESSION['agree'] !== TRUE)) {
+if ((!isset($_COOKIE['signedIn'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['agree'] == FALSE))) {
     echo ('<div id="popup-box" class="z-3 position-absolute top-50 start-50 translate-middle p-4 rounded-3" style="background-color:beige">
             <h1>DISCLAIMER</h1>
             <p>The content presented on Legal Digest 4 New Jersey should not be construed as legal advice and is not meant to serve as such. Rather, all materials, content, and information provided here are intended for general informational purposes only.</p><br>
@@ -35,7 +35,7 @@ if (!isset($_COOKIE['signedIn']) && ($_SESSION['agree'] !== TRUE)) {
     <div class="col-4 h-auto d-inline-block my-4 rounded-5 border-3" style="background-color:white">
         <?php
         if (!isset($_COOKIE['signedIn'])) {
-            echo ('<div class"position-relative w-100 h-100 opacity-50 bg-black"></div>');
+            echo ('<div class"position-absolute opacity-50 bg-black"></div>');
         }
         ?>
         <div class="h-100 m-1 rounded-5" style="background-color: rgb(80, 104, 148);">

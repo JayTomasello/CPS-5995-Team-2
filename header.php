@@ -16,8 +16,8 @@ session_start();
 
 <body>
     <?php
-    if (!isset($_COOKIE['signedIn']) && ($_SESSION['agree'] !== TRUE)) {
-        echo ('<div class="z-2 position-absolute w-100 h-100 opacity-50 bg-black"</div>');
+    if ((!isset($_COOKIE['signedIn'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['agree'] == FALSE))) {
+        echo ('<div class="z-2 position-absolute w-100 h-100 opacity-50 bg-black"></div>');
     }
     ?>
 
