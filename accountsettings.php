@@ -19,12 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deregister'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Account Settings</title>
     <!--I guess this is Matthew's time to shine... but not too brightly please (html stuff) -->
 </head>
+
 <body>
     <h1>User Account Settings</h1>
 
@@ -47,4 +49,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deregister'])) {
         });
     </script>
 </body>
+
 </html>

@@ -146,12 +146,12 @@ session_start();
                 <button class="btn-group m-2"> 
                     <img src="./settings.png" class="img" width="50px" alt="...">
                     <label class="fs-1">Settings</label>                
-                </button>                
+                </button>
                 ');
             } else {
                 echo ('<label class="navbar-brand fs-4 text-dark me-4" style="font-family: Georgia, ' . 'Times New Roman' . ' , Times, serif">Welcome, Guest.</label>
                     <img src="./User Icon.png" class="img" width="50px" alt="...">
-                    <a type="button" class="btn btn-secondary mx-4" href="login.php">Login?</a>
+                    <a type="button" class="btn btn-secondary mx-4" href="login.php">logout?</a>
                 ');
             }
 
