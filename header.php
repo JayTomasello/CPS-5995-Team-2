@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,14 +14,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 
-<body>
+<body class="vh-100 vw-100">
     <?php
-    if (!isset($_COOKIE['signedIn']) && ($_SESSION == 'agree')) {
-        echo ('<div class="z-2 position-absolute vw-100 vh-100 opacity-50" style="background-color:black"></div>');
+    if (!isset($_COOKIE['signedIn']) && ($_SESSION['agree'] !== TRUE)) {
+        echo ('<div class="z-2 position-absolute w-100 h-100 opacity-50" style="background-color:black"></div>');
     }
     ?>
 
-    <nav class="navbars navbar-expand-lg bg vw-100" style="background-color:white">
+    <nav class="navbars navbar-expand-lg bg vh-25 vw-100" style="background-color:white">
 
         <div class="navbar-brand container-fluid d-`flex justify-content-start">
 

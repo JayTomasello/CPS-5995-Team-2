@@ -2,11 +2,8 @@
 include('header.php');
 ?>
 
-<!DOCTYPE html>
-<html>
-
 <?php
-if (!isset($_COOKIE['signedIn']) && ($_SESSION == 'agree')) {
+if (!isset($_COOKIE['signedIn']) && ($_SESSION['agree'] !== TRUE)) {
     echo ('<div id="popup-box" class="z-3 position-absolute top-50 start-50 translate-middle p-4 rounded-3" style="background-color:beige">
             <h1>DISCLAIMER</h1>
             <p>The content presented on Legal Digest 4 New Jersey should not be construed as legal advice and is not meant to serve as such. Rather, all materials, content, and information provided here are intended for general informational purposes only.</p><br>
@@ -30,44 +27,7 @@ if (!isset($_COOKIE['signedIn']) && ($_SESSION == 'agree')) {
 }
 ?>
 
-
-<!-- <script>
-        // Get the overlay, pop-up box, and buttons
-        var overlay = document.getElementById('overlay');
-        var popupBox = document.getElementById('popup-box');
-        var agreeBtn = document.getElementById('agree-btn');
-        var disagreeBtn = document.getElementById('disagree-btn');
-
-        // Function to close the pop-up box and overlay
-        function closePopupBox() {
-            popupBox.style.display = 'none';
-            overlay.style.display = 'none';
-        }
-
-        // Function to redirect to another page
-        function redirectToAnotherPage() {
-            window.location.href = 'disclaimer.php';
-        }
-
-        // Event listener for the Agree button
-        agreeBtn.addEventListener('click', function() {
-            closePopupBox();
-        });
-
-        // Event listener for the Disagree button
-        disagreeBtn.addEventListener('click', function() {
-            redirectToAnotherPage();
-        });
-
-        // Display the overlay and pop-up box on page load
-        window.onload = function() {
-            overlay.style.display = 'block';
-            popupBox.style.display = 'block';
-        };
-    </script> -->
-
-
-<div class="d-flex justify-content-evenly" style="height:88vh; background-color: rgb(170, 159, 91)">
+<div class="d-flex justify-content-evenly vh-75 vw-100" style="height:88vh; background-color: rgb(170, 159, 91)">
 
     <!-- AI Lawyer -->
     <div class="col-4 h-auto d-inline-block my-4 rounded-5 border-3 <?php if (!isset($_COOKIE['signedIn'])) {

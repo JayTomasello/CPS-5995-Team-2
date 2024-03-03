@@ -38,6 +38,7 @@ def hash_password(password):
     return hashed_password
 
 
+@app.route('/register', methods=['POST'])
 def userRegistration(supabase, email, password, token):
 
     if email:
@@ -53,6 +54,7 @@ def userRegistration(supabase, email, password, token):
         return 'Invalid email: No Email Provided'
 
 
+@app.route('login', methods=['POST'])
 def userLogin(supabase, email, password):
 
     if email:
@@ -69,34 +71,6 @@ def userLogin(supabase, email, password):
             if response.data[0]['password'] == h_password:
 
                 return response
-            else:
-                return 'Incorrect password'
-
-        else:
-            return 'Invalid password: No Password Provided'
-    else:
-        return 'Invalid email: Mo Email Provided'
-
-
-def userDeregister(supabase, email, password, token):
-
-    if email:
-        if password:
-            # Set a cookie to remember the user
-            h_password = hash_password(password)
-            response = None
-            try:
-                response = supabase.table('sub_user').select(
-                    'email', 'password').eq('email', email).execute()
-            except:
-                return 'User not found'
-            print(response.data[0]['password'])
-            if response.data[0]['password'] == password:
-                print("User Exists!")
-                data = supabase.table('sub_user').delete().eq(
-                    'email', email).execute()
-                return data
-
             else:
                 return 'Incorrect password'
 

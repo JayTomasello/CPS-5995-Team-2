@@ -1,4 +1,4 @@
 <?php
 session_start();
-$_SESSION = 'agree';
+$_SESSION['agree'] = TRUE;
 header('Location: index.php');
