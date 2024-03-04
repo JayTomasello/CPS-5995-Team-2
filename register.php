@@ -91,7 +91,7 @@
                 exec($command, $output, $return_var);
                 setcookie("email", $email, time() + 3600, "/");
                 echo $output[0];
-                // header("Location: ./select_notifications.php");
+                // header("Location: ./select_notifications.php")sss;
             }
         }
     }
