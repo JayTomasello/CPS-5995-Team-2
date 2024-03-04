@@ -16,7 +16,9 @@
 <?php
 	if(isset($_POST['GO']))
 	{
-		$output = exec("/usr/bin/env python3 /Applications/XAMPP/xamppfiles/htdocs/py-tests/send_email.py");
-        echo $output;
+    $email = 'ridinonall4s@gmail.com';
+    $command = "python3 send_email.py $email";
+    exec($command, $output, $return_var);
+    echo $output[0];
 	}
 ?>
