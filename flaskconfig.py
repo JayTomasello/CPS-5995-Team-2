@@ -1,4 +1,4 @@
-from flask import Flask, request, response, jsonify
+from flask import Flask, request, jsonify, redirect
 from flask_mail import Mail, Message
 from supabase import create_client, Client
 import hashlib
@@ -54,7 +54,7 @@ def userRegistration(supabase, email, password, token):
         return 'Invalid email: No Email Provided'
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login.php', methods=['POST'])
 def userLogin():
     email = request.form.get("Email")
     password = request.form.get("Password")
@@ -62,17 +62,19 @@ def userLogin():
     # Set a cookie to remember the user
     hashed_password = hash_password(password)
     response = None
+
     try:
         response = supabase.table('sub_user').select(
             'email', 'password').eq('email', email).execute()
-    except:
-        return 'User not found'
-    print(response.data[0]['password'])
-    if response.data[0]['password'] == hashed_password:
-        return response
-    else:
-        return 'Incorrect password'
 
+        if response:
+            if response['password'] == hashed_password:
+                response.set_cookie('signedIn', email)
+                return redirect('index.php')
+            else:
+                return 'Invalid Password'
+    except:
+        return 'Invalid Email'
 
 
 @app.route('/forgot_password', methods=['POST'])
@@ -88,8 +90,10 @@ def resetPassword(supabase, email, new_password):
     else:
         return 'Invalid email: No Email Provided'
 
+
 @app.route('/logout', methods=['POST'])
 def logout():
+    None
 
 
 @app.route('/confirm_email/<token>')
