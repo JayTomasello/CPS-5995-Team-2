@@ -1,6 +1,6 @@
 from supabase import create_client, Client
 import hashlib
-
+import sys
 
 def hash_password(password):
     # Encode the password string to bytes
@@ -29,17 +29,16 @@ def userLogin(supabase, email, password):
                 response = supabase.table('sub_user').select('email', 'password').eq('email', email).execute()
             except:
                 return 'User not found'
-            print(response.data[0]['password'])
             if response.data[0]['password'] == h_password:
                 
-                return response
+                return 'Correct password'
             else:
                 return 'Incorrect password'
                 
          else:
              return 'Invalid password: No Password Provided'
     else:
-        return 'Invalid email: Mo Email Provided'
+        return 'Invalid email: No Email Provided'
     
 
 if __name__ == "__main__":

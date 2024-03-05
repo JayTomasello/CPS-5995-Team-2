@@ -1,8 +1,7 @@
+import sys, os
 from supabase import create_client, Client
 import hashlib
 import sys
-
-
 
 def hash_password(password):
     # Encode the password string to bytes

@@ -1,9 +1,7 @@
-#!/usr/bin/env python
 import smtplib, ssl
 from email.mime.text import MIMEText
 from random import randrange
-
-acct_verif_code = randrange(100000, 999999)
+import sys
 
 def send_email_gmail(subject, message, destination):
     # First assemble the message
@@ -19,6 +17,10 @@ def send_email_gmail(subject, message, destination):
         server.login(my_mail, my_password)
         server.sendmail(my_mail, destination, msg.as_string())
 
-message = 'Your Verification Code: ' + str(acct_verif_code)
-send_email_gmail('LD4NJ - Account Verification Code', message, 'ridinonall4s@gmail.com')
-print(acct_verif_code)
+if __name__ == "__main__":
+    acct_verif_code = randrange(100000, 999999)
+    args = sys.argv[1:]
+    eml = args[0]
+    message = 'Your Verification Code: ' + str(acct_verif_code)
+    send_email_gmail('LD4NJ - Account Verification Code', message, eml)
+    print(acct_verif_code)

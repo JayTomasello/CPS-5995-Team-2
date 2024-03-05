@@ -10,9 +10,10 @@
 </head>
 
 <body class="container align-middle justify-content-center" style="background-image: url(./Courthouse.jpg); background-size:cover; background-position:center -100px">
-    <h3 class="text-center" style="margin-top: 50px; font-family:Georgia, 'Times New Roman', Times, serif">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3>
-    <form class="text-center m-5" action="/register.php" method="POST">
-        <h1 class="card-title" style="font-family:Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</h1>
+<h1 class="text-center" style="font-family:Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</h1>    
+<h3 class="text-center" style="margin-top: 50px; font-family:Georgia, 'Times New Roman', Times, serif">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3>
+<h3 class="text-center" style="margin-top: 30px; font-family:Georgia, 'Times New Roman', Times, serif">Login</h3>
+<form class="text-center m-5" action="" method="POST">
 
         <div class="mb-3">
             <input name="Email" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter Email" required>
@@ -45,10 +46,51 @@
                     || !preg_match("/[0-9]/", $password) || !preg_match("/[^A-Za-z0-9]/", $password)
                 ) {
                     echo "<h2 class='text-center'>Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character.</h2>";
+                } else {
+                    $command = "python send_email.py $email";
+                    exec($command, $output, $return_var);
+                    $verif_code = $output[0];
+                    echo $verif_code;
+                    echo "<h2>A verification code has been sent to $email. Please input it below to complete your account registration.</h2>";
+                    echo "<form class='text-center m-5' action='' method='POST'>";
+                    echo "<div class='mb-3'>
+                        <input name='Verification' type='number' class='form-control' placeholder='Enter Verification Code' required>
+                    </div>";
+                    echo "<input type='hidden' id='email2' name='email2' value='$email'>";
+                    echo "<input type='hidden' id='password2' name='password2' value='$password'>";
+                    echo "<input type='hidden' id='verification_true' name='verification_true' value='$verif_code'>";
+                    echo "<button name='Verify' type='submit' value='submit' class='btn btn-primary'>Verify Code</button>
+                    </form>";
                 }
             }
         }
+        // Check if the verification code matches
+        if (isset($_POST['Verify'])) {
+            $input_code = $_POST['Verification'];
+            $email = $_POST['email2'];
+            $password = $_POST['password2'];
+            $verif_code = $_POST['verification_true'];
+            if ($input_code != $verif_code) {
+                echo "<h4 class='text-center'>Error: Verification code does not match</h4>";
+                echo "<h3>A verification code has been sent to $email. Please input it below to complete your account registration.</h3>";
+                echo "<form class='text-center m-5' action='' method='POST'>";
+                echo "<div class='mb-3'>
+                        <input name='Verification' type='number' class='form-control' placeholder='Enter Verification Code' required>
+                    </div>";
+                echo "<input type='hidden' id='email2' name='email2' value='$email'>";
+                echo "<input type='hidden' id='password2' name='password2' value='$password'>";
+                echo "<input type='hidden' id='verification_true' name='verification_true' value='$verif_code'>";
+                echo "<button name='Verify' type='submit' value='submit' class='btn btn-primary'>Verify Code</button>
+                    </form>";
+            } else {
+                $command = "python userrRegistration.py $email $password";
+                exec($command, $output, $return_var);
+                setcookie("email", $email, time() + 3600, "/");
+                header("refresh:5 ; url=./login.php");
+                echo "<h4 class='text-center'>Account registration successful! You will be redirected to the login page in 5 seconds...</h4>";
+            }
     }
+}
     ?>
 </body>
 

@@ -11,7 +11,7 @@
 
 <body class="container align-middle justify-content-center" style="background-image: url(./Courthouse.jpg); background-size:cover; background-position:center -100px">
     <h3 class="text-center" style="margin-top: 50px; font-family:Georgia, 'Times New Roman', Times, serif">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3>
-    <form class="text-center m-5" action="/login.php" method="POST">
+    <form class="text-center m-5" action="" method="POST">
         <h1 class="card-title" style="font-family:Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</h1>
 
         <div class="mb-3">
@@ -29,20 +29,23 @@
         <button name="login" type="submit" value="submit" class="btn btn-primary mx-5">Submit</button>
     </form>
     <?php
-    // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //     if (isset($_POST['login']) && isset($_POST['Email']) && isset($_POST['Password'])) {
-    //         $email = $_POST['Email'];
-    //         $password = $_POST['Password'];
-    //         $command = "python userLogin.py $email $password";
-    //         exec($command, $output, $return_var);
-    //         if ($return_var != null) {
-    //         }
-    //         setcookie("email", $email, time() + 3600, "/");
-    //         header("Location: /index.php");
-    //     } else {
-    //         echo "<h2 class='text-center'>Login failed!</h2>";
-    //     }
-    // }
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (isset($_POST['login']) && isset($_POST['Email']) && isset($_POST['Password'])) {
+            $email = $_POST['Email'];
+            $password = $_POST['Password'];
+            $command = "python userLogin.py $email $password";
+            exec($command, $output, $return_var);
+            if ($output[0] == 'Correct password') {
+                setcookie("email", $email, time() + 3600, "/");
+                header("Location: ./index.php");
+            } else {
+                echo "<h4 style='color:red;text-align:center;'>" . $output[0] . "</h4>";
+            }
+        } else {
+            echo "<h2 class='text-center'>Login failed!</h2>";
+        }
+    }
+
     ?>
 
 </body>
