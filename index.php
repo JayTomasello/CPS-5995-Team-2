@@ -32,18 +32,13 @@ if ((!isset($_COOKIE['email'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['
 
     <!-- AI Lawyer -->
 
-    <div class="col-4 h-auto d-inline-block my-4 rounded-5 border-3" style="background-color:white">
-        <?php
-        if (!isset($_COOKIE['email'])) {
-            echo ('<div class"position-absolute opacity-50 bg-black"></div>');
-        }
-        ?>
-        <div class="h-100 m-1 rounded-5" style="background-color: rgb(80, 104, 148);">
+    <div class="col-4 h-auto d-inline-block my-4 rounded-5 border-3 <?php if (!isset($_COOKIE['email'])) { echo 'disabled'; } ?>" style="background-color:<?php echo (!isset($_COOKIE['email']) ? 'lightgrey' : 'white'); ?>">
+        <div class="h-100 m-1 rounded-5" style="background-color: <?php echo (!isset($_COOKIE['email']) ? 'lightgrey' : 'rgb(80, 104, 148)'); ?>;">
             <div class="d-inline-flex m-4">
-                <input class="col-12 input-group-text rounded-5 disabled" placeholder="Ask our robot lawyer...">
-                <img class="img mx-5" src="./robot lawyer.png" style="width:100px;">
+                <input class="col-12 input-group-text rounded-5 <?php if (!isset($_COOKIE['email'])) { echo 'disabled'; } ?>" placeholder="<?php if (!isset($_COOKIE['email'])) { echo 'Login/Register as a Subscribed User'; } else { echo 'Ask about a document...'; } ?>" <?php if (!isset($_COOKIE['email'])) { echo 'disabled'; } ?>>
+                <img class="img mx-5 <?php if (!isset($_COOKIE['email'])) { echo 'disabled'; } ?>" src="./robot lawyer.png" style="width:100px;">
             </div>
-            <div class="m-4 p-3 h-75 rounded-5" style="background-color:white">
+            <div class="m-4 p-3 h-75 rounded-5 <?php if (!isset($_COOKIE['email'])) { echo 'disabled'; } ?>" style="background-color:<?php echo (!isset($_COOKIE['email']) ? 'lightgrey' : 'white'); ?>">
                 AI Lawyer Response
             </div>
         </div>
