@@ -25,7 +25,7 @@ session_start();
 
         <div class="container-fluid justify-content-start">
 
-            <img src="../NJLawDigest Logo.png" class="img me-4" width="100px" alt="...">
+            <img src="./NJLawDigest Logo.png" class="img me-4" width="100px" alt="...">
             <label class="navbar-brand fs-1 text-dark me-4" style="font-family: Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</label>
 
             <div class="btn-group m-3">
@@ -139,21 +139,19 @@ session_start();
 
         <div class="container-fluid justify-content-end">
             <?php
-            if (isset($_COOKIE['signedIn'])) {
-                echo ('<label class="navbar-brand fs-4 text-dark me-4" style="font-family: Georgia, ' . 'Times New Roman' . ' , Times, serif">Welcome, ' . $_COOKIE['signedIn'] . '.</label>
+            if (isset($_COOKIE['email'])) {
+                echo ('<label class="navbar-brand fs-4 text-dark me-4" style="font-family: Georgia, ' . 'Times New Roman' . ' , Times, serif">Welcome, ' . $_COOKIE['email'] . '.</label>
                 <img src="./User Icon.png" class="img" width="50px" alt="...">
-                <a type="button" class="btn btn-secondary mx-4" href="logout.php">Logout?</a>
+                <a type="button" class="btn btn-secondary mx-4" href="logout.php">Logout</a>
                 <button class="btn-group m-2"> 
                     <img src="./settings.png" class="img" width="50px" alt="...">
                     <label class="fs-1">Settings</label>                
                 </button>
                 ');
             } else {
-                echo ('<label class="navbar-brand fs-4 text-dark mx-2" style="font-family: Georgia, ' . 'Times New Roman' . ' , Times, serif">Welcome, Guest.</label>
-                    <img src="./User Icon.png" class="img mx-4" width="50px" alt="...">
-                    <a type="button" class="btn btn-secondary mx-2" href="login.php">Login</a>
-                    <a type="button" class="btn btn-secondary mx-2" href="register.php">Create Account</a>
-                    <a type="button" class="btn mx-2" href="./disclaimer.php"><img src="./learn_more.png" class="img" width="50px" alt="..."></a>
+                echo ('<label class="navbar-brand fs-4 text-dark me-4" style="font-family: Georgia, ' . 'Times New Roman' . ' , Times, serif">Welcome, Guest.</label>
+                    <img src="./User Icon.png" class="img" width="50px" alt="...">
+                    <a type="button" class="btn btn-secondary mx-4" href="login.php">Login</a>
                 ');
             }
 

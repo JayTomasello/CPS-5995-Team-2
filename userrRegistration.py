@@ -26,7 +26,7 @@ def userRegistration(supabase, email, password, token):
             h_password = hash_password(password)
             data = {"email": email, "password": h_password, "token": token}
             response = supabase.table("sub_user").insert(data).execute()
-            return response
+            return 'Registration Successful'
          else:
              return 'Invalid password: No Password Provided'
     else:
