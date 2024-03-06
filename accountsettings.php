@@ -1,46 +1,3 @@
-<?php 
-
-if (!isset($_COOKIE['email'])) { 
-    echo "<style>
-    body {
-        background-image: url(./Courthouse.jpg);
-        background-size: cover;
-        background-position: center -100px;
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
-    .message-box {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        max-width: 80%;
-        text-align: center;
-    }
-
-    h4 {
-        margin: 0;
-    }
-</style>
-</head>
-
-<body class='container'>;
-    <div class='message-box'><h4>You must login as a Subscribed User to view this page.</h4></div>
-
-    </body>
-
-    </html>";
-    die();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -66,17 +23,57 @@ if (!isset($_COOKIE['email'])) {
             padding-top: 50px; /* Adjust top padding to fit below navbar */
         }
 
-        
-
         .btn-check:checked + .btn-outline-dark {
             color: #000;
         }
     </style>
 </head>
 
-<?php include('headerSettings.php'); ?>
-
 <body>
+
+    <?php 
+    if (!isset($_COOKIE['email'])) { 
+        echo "<style>
+            body {
+                background-image: url(./Courthouse.jpg);
+                background-size: cover;
+                background-position: center -100px;
+            }
+
+            .container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+
+            .message-box {
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                max-width: 80%;
+                text-align: center;
+            }
+
+            h4 {
+                margin: 0;
+            }
+        </style>
+        </head>
+
+        <body class='container'>;
+            <div class='message-box'><h4>You must login as a Subscribed User to view this page.</h4></div>
+
+            </body>
+
+            </html>";
+        die();
+    }
+    ?>
+
+    <?php include('headerSettings.php'); ?>
 
     <?php 
     $lawCategories = [
@@ -175,11 +172,37 @@ if (!isset($_COOKIE['email'])) {
 
         <h3>User Account Settings</h3>
 
-        <form class="text-center rounded-3" id="deregisterForm" action="userDeregister.py" method="POST">
-            <p>To deregister your account, click the button below.</p>
-            <button type="button" id="deregisterButton" class="btn btn-danger">Deregister Account</button>
-            <input type="hidden" id="userEmail" name="email" value="<?php echo $_COOKIE['email']; ?>">
-        </form>
+        <form class="text-center rounded-3" id="deregisterForm" action="" method="POST">
+            <p style='color: red;'><b>To deregister your account, confirm your email below and click "De-Register".</b></p>
+            <input name="Email" type="email" placeholder="Enter Email" required>
+            <input type="hidden" id="userEmail" name="true_email" value="<?php echo $_COOKIE['email']; ?>">
+            <button name="deregister" type="submit" value="submit" class="btn btn-primary mx-5">De-Register</button>
+        </form><br>
+
+        <?php
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (isset($_POST['deregister'])) {
+            $email = $_POST['Email'];
+            $true_email = $_POST['true_email'];
+            if ($email == $true_email) {
+                $command = "python userDeregister.py $true_email";
+                exec($command, $output, $return_var);
+                if (isset($output[0])) {
+                    if ($output[0] == 'Deleted') {
+                        header("Location: ./regout.php");
+                    } else {
+                        echo "<h4 style='color:red;text-align:center;'>" . $output[0] . "</h4>";
+                    }
+                } else {
+                    echo "<h4 style='color:red;text-align:center;'>Could not delete.</h4>";
+                }
+            } else {
+                echo "<h4 style='color:red;text-align:center;'>Incorrect Email</h4>";
+            }
+    }
+}
+
+    ?>
 
         <form class="bg-secondary rounded-5 p-3">
             <h3 class="text-light">I wish to receive updates on laws regarding...</h3>
@@ -199,17 +222,6 @@ if (!isset($_COOKIE['email'])) {
 
     </div>
 
-    <script>
-        document.getElementById('deregisterButton').addEventListener('click', function() {
-            var userEmail = document.getElementById('userEmail').value;
-            var confirmation = prompt("To confirm deregistration, please type your account email:");
-            if (confirmation && confirmation === userEmail) {
-                document.getElementById('deregisterForm').submit();
-            } else {
-                alert("Email confirmation does not match.");
-            }
-        });
-    </script>
 </body>
 
 </html>

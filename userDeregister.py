@@ -26,7 +26,7 @@ def userDeregister(supabase, email):
 
         if response.data:
             data = supabase.table('sub_user').delete().eq('email', email).execute()
-            return data
+            return "Deleted"
         else:
             return 'User not found'
     else:
