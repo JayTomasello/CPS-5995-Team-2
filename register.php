@@ -1,4 +1,10 @@
 <?php 
+
+if (isset($_COOKIE['email'])) {
+    $email = $_COOKIE['email'];
+    setcookie("email", $email, time() - 3600, "/");
+}
+
     include('header3.php');
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
