@@ -96,10 +96,10 @@
 </head>
 
 <body class="justify-content-center">
-    <h1 class="text-center mt-5">Law Digest 4 New Jersey</h1>
-    <h3 class="text-center my-3">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3>
-    <h3 class="text-center mb-4">Register as a Subscribed User</h3>
     <form class="text-center m-5" action="" method="POST">
+    <h3 class="text-center" style="margin-top: 50px; font-family:Georgia, 'Times New Roman', Times, serif">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3><br>
+        <h1 class="card-title" style="font-family:Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</h1><br>
+        <h2 class="card-title" style="font-family:Georgia, 'Times New Roman', Times, serif">Register as a Subscribed User</h2>
         <div class="mb-3">
             <input name="Email" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter Email" required>
         </div>
