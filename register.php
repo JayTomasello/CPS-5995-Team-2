@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -25,11 +24,11 @@
     </style>
 </head>
 
-<body class="container align-middle justify-content-center">
+<body class="justify-content-center">
     <h1 class="text-center mt-5">Law Digest 4 New Jersey</h1>
     <h3 class="text-center my-3">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3>
     <h3 class="text-center mb-4">Register as a Subscribed User</h3>
-    <form class="text-center mb-5" action="" method="POST">
+    <form class="text-center m-5" action="" method="POST">
         <div class="mb-3">
             <input name="Email" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter Email" required>
         </div>
@@ -97,8 +96,8 @@
                 exec($command, $output, $return_var);
                 if ($output[0] == 'Registration Successful') {
                     setcookie("email", $email, time() + 3600, "/");
-                    header("refresh:5 ; url=./login.php");
                     echo "<h4 class='text-center'>Account registration successful! You will be redirected to the login page in 5 seconds...</h4>";
+                    header("refresh:5 ; url=./login.php");
                 } else {
                     echo $output[0];
                 }

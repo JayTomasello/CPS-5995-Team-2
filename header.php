@@ -164,7 +164,7 @@ session_start();
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="userMenu">
                                 <li><a class="dropdown-item" href="logout.php">Logout</a></li>
-                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                                <li><a class="dropdown-item" href="accountSettings.php">Settings</a></li>
                             </ul>
                         </div>');
             } else {
