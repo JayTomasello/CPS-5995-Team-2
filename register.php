@@ -1,3 +1,74 @@
+<?php 
+    include('header3.php');
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (isset($_POST['Enter'])) {
+            $email = $_POST['Email'];
+            $password = $_POST['Password'];
+            $confirm_password = $_POST['Confirm_Password'];
+            if ($password != $confirm_password) {
+                echo "<br><h2 style='color: red;' class='text-center'>Passwords do not match</h2>";
+            } else {
+                if (
+                    strlen($password) < 8 || !preg_match("/[A-Z]/", $password)
+                    || !preg_match("/[0-9]/", $password) || !preg_match("/[^A-Za-z0-9]/", $password)
+                ) {
+                    echo "<br><h2 style='color: red;' class='text-center'>Error: Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character.</h2>";
+                } else {
+                    $command = "python send_email.py $email";
+                    exec($command, $output, $return_var);
+                    $verif_code = $output[0];
+                    echo $verif_code;
+                    echo "<br><h2 class='text-center'>A verification code has been sent to $email. Please input it below to complete your account registration.</h2>";
+                    echo "<form class='text-center m-5' action='' method='POST'>";
+                    echo "<div class='mb-3'>
+                        <input name='Verification' type='number' class='form-control' placeholder='Enter Verification Code' required>
+                    </div>";
+                    echo "<input type='hidden' id='email2' name='email2' value='$email'>";
+                    echo "<input type='hidden' id='password2' name='password2' value='$password'>";
+                    echo "<input type='hidden' id='verification_true' name='verification_true' value='$verif_code'>";
+                    echo "<button name='Verify' type='submit' value='submit' class='btn btn-primary'>Verify Code</button>
+                    </form>";
+                }
+            }
+        }
+
+        // Check if the verification code matches
+        if (isset($_POST['Verify'])) {
+            $input_code2 = $_POST['Verification'];
+            $email2 = $_POST['email2'];
+            $password2 = $_POST['password2'];
+            $verif_code2 = $_POST['verification_true'];
+            if ($input_code2 != $verif_code2) {
+                echo "<br><h4 style='color: red;' class='text-center'>Error: Verification code does not match</h4>";
+                echo "<h3 class='text-center'>A verification code has been sent to $email2. Please input it below to complete your account registration.</h3>";
+                echo "<form class='text-center m-5' action='' method='POST'>";
+                echo "<div class='mb-3'>
+                        <input name='Verification' type='number' class='form-control' placeholder='Enter Verification Code' required>
+                    </div>";
+                echo "<input type='hidden' id='email2' name='email2' value='$email2'>";
+                echo "<input type='hidden' id='password2' name='password2' value='$password2'>";
+                echo "<input type='hidden' id='verification_true' name='verification_true' value='$verif_code2'>";
+                echo "<button name='Verify' type='submit' value='submit' class='btn btn-primary'>Verify Code</button>
+                    </form>";
+            } else {
+                $command = "python userrRegistration.py $email2 $password2";
+                exec($command, $output, $return_var);
+                if (isset($output[0])) {
+                    if ($output[0] == 'Registration Successful') {
+                        echo "<br><h4 class='text-center'>Account registration successful! You will be redirected to the login page in 5 seconds...</h4>";
+                        header("refresh:5 ; url=./login.php");
+                    } else {
+                        echo "<br><h4 style='color: red;' class='text-center'>Error: $output[0].</h4>";
+                    }
+                } else {
+                    echo "<br><h4 style='color: red;' class='text-center'>Error: Email already exists.</h4>";
+                }
+            }
+        }
+    }
+?>
+
 <html lang="en">
 
 <head>
@@ -40,71 +111,6 @@
         </div>
         <button name="Enter" type="submit" value="submit" class="btn btn-primary">Submit</button>
     </form>
-
-    <?php
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        if (isset($_POST['Enter'])) {
-            $email = $_POST['Email'];
-            $password = $_POST['Password'];
-            $confirm_password = $_POST['Confirm_Password'];
-            if ($password != $confirm_password) {
-                echo "<h2>Passwords do not match</h2>";
-            } else {
-                if (
-                    strlen($password) < 8 || !preg_match("/[A-Z]/", $password)
-                    || !preg_match("/[0-9]/", $password) || !preg_match("/[^A-Za-z0-9]/", $password)
-                ) {
-                    echo "<h2 class='text-center'>Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character.</h2>";
-                } else {
-                    $command = "python send_email.py $email";
-                    exec($command, $output, $return_var);
-                    $verif_code = $output[0];
-                    echo $verif_code;
-                    echo "<h2>A verification code has been sent to $email. Please input it below to complete your account registration.</h2>";
-                    echo "<form class='text-center m-5' action='' method='POST'>";
-                    echo "<div class='mb-3'>
-                        <input name='Verification' type='number' class='form-control' placeholder='Enter Verification Code' required>
-                    </div>";
-                    echo "<input type='hidden' id='email2' name='email2' value='$email'>";
-                    echo "<input type='hidden' id='password2' name='password2' value='$password'>";
-                    echo "<input type='hidden' id='verification_true' name='verification_true' value='$verif_code'>";
-                    echo "<button name='Verify' type='submit' value='submit' class='btn btn-primary'>Verify Code</button>
-                    </form>";
-                }
-            }
-        }
-        // Check if the verification code matches
-        if (isset($_POST['Verify'])) {
-            $input_code = $_POST['Verification'];
-            $email = $_POST['email2'];
-            $password = $_POST['password2'];
-            $verif_code = $_POST['verification_true'];
-            if ($input_code != $verif_code) {
-                echo "<h4 class='text-center'>Error: Verification code does not match</h4>";
-                echo "<h3>A verification code has been sent to $email. Please input it below to complete your account registration.</h3>";
-                echo "<form class='text-center m-5' action='' method='POST'>";
-                echo "<div class='mb-3'>
-                        <input name='Verification' type='number' class='form-control' placeholder='Enter Verification Code' required>
-                    </div>";
-                echo "<input type='hidden' id='email2' name='email2' value='$email'>";
-                echo "<input type='hidden' id='password2' name='password2' value='$password'>";
-                echo "<input type='hidden' id='verification_true' name='verification_true' value='$verif_code'>";
-                echo "<button name='Verify' type='submit' value='submit' class='btn btn-primary'>Verify Code</button>
-                    </form>";
-            } else {
-                $command = "python userrRegistration.py $email $password";
-                exec($command, $output, $return_var);
-                if ($output[0] == 'Registration Successful') {
-                    setcookie("email", $email, time() + 3600, "/");
-                    echo "<h4 class='text-center'>Account registration successful! You will be redirected to the login page in 5 seconds...</h4>";
-                    header("refresh:5 ; url=./login.php");
-                } else {
-                    echo $output[0];
-                }
-            }
-    }
-}
-    ?>
 </body>
 
 </html>
