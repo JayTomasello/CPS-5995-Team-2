@@ -9,6 +9,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 
+<?php
+
+    if (isset($_COOKIE['email'])) {
+        $email = $_COOKIE['email'];
+        setcookie("email", $email, time() - 3600, "/");
+    }
+
+    ?>
+
 <?php include('header2.php'); ?>
 
 <body class="justify-content-center" style="background-image: url(./Courthouse.jpg); background-size:cover; background-position:center -100px">
@@ -37,12 +46,16 @@
             $password = $_POST['Password'];
             $command = "python userLogin.py $email $password";
             exec($command, $output, $return_var);
-            if ($output[0] == 'Correct password') {
-                setcookie("email", $email, time() + 3600, "/");
-                header("Location: ./index.php");
-            } else {
-                echo "<h4 style='color:red;text-align:center;'>" . $output[0] . "</h4>";
-            }
+            if (isset($output[0])) {
+                if ($output[0] == 'Correct password') {
+                    setcookie("email", $email, time() + 3600, "/");
+                    header("Location: ./index.php");
+                } else {
+                    echo "<h4 style='color:red;text-align:center;'>" . $output[0] . "</h4>";
+                }
+        } else {
+            echo "<h4 style='color:red;text-align:center;'>Incorrect Email</h4>";
+        }
         } else {
             echo "<h2 class='text-center'>Login failed!</h2>";
         }
