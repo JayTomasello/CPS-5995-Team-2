@@ -1,3 +1,11 @@
+from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import WebDriverException, NoSuchElementException
+import logging
+import time
+from supabase import create_client
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
@@ -12,7 +20,6 @@ import os
 import pandas as pd
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, select, update
 from sqlalchemy.orm import sessionmaker
-import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait, Select
@@ -20,299 +27,276 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import time
-from selenium.common.exceptions import WebDriverException
+from supabase import create_client, Client
+import logging
+from multiprocessing import Pool
 
 
 
-# Set up Chrome options for headless mode
-chrome_options = Options()
-chrome_options.add_argument("--headless")  # Ensures the browser runs in headless mode
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-shm-usage')
-
-# Path to your chromedriver executable
-chromedriver_path = r"C:\Users\effra\Downloads\ChromeDriver_Selenium\chromedriver.exe"
-
-service = Service(executable_path=chromedriver_path)
-driver = webdriver.Chrome(service=service, options=chrome_options)
-
+# Setup logger
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 def setup_driver():
     """Sets up the WebDriver."""
-    # Set up Chrome options for headless mode
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")  # Ensures the browser runs in headless mode
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
-
-    # Path to your chromedriver executable
-    chromedriver_path = r"C:\Users\effra\Downloads\ChromeDriver_Selenium\chromedriver.exe"
-
-    service = Service(executable_path=chromedriver_path)
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    options = webdriver.FirefoxOptions()
+    options.add_argument('--headless') 
+    driver = webdriver.Firefox(options=options)
     return driver
 
-
-def main_logic(driver):
-    """Main logic to perform operations with the driver."""
-
-
-    data = []  # Initialize a list to store data dictionaries
-
-    driver.get('https://www.njleg.state.nj.us/bill-search')
-    
-    ####  CHECK IF SUBJECT AND SESSION EXIST  ####
+def reinitialize_driver(driver):
+    """Quits the current WebDriver instance and initializes a new one."""
     try:
-        # Wait for the session and subject dropdowns to load
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'Session')))
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'Subject')))
-    except WebDriverException:
-        print("Session and/or subject dropdowns did not load. Refreshing the page...")
-        driver.get(driver.current_url)
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Session')))
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Subject')))
+        driver.quit()
+    except Exception:
+        pass  # Ignore errors when quitting the driver
+    driver = setup_driver()
+    return driver
 
-    #### HANDLE PRINTING OF SESSION AND SUBJECT DROPDOWNS  ####
-    # Handle Session Dropdown
+def store_last_scraped_info(session, subject):
+    with open("last_scraped.txt", "w") as file:
+        file.write(f"{session},{subject}")
+
+
+
+def load_last_scraped_info():
+    try:
+        with open("last_scraped.txt", "r") as file:
+            session, subject = file.read().split(',')
+            return session, subject
+    except FileNotFoundError:
+        return None, None
+    
+def generate_remaining_bill_search_data(driver, last_session, last_subject):
+    sessions_subjects_pairs = generate_bill_search_data(driver)
+    if last_session is None and last_subject is None:
+        return sessions_subjects_pairs  # No last session/subject, return full list
+
+    remaining_sessions_subjects_pairs = {}
+    session_found = False
+
+    for session in sessions_subjects_pairs:
+        if session_found or session == last_session:
+            subjects_list = sessions_subjects_pairs[session]
+            if session == last_session:
+                subject_index = subjects_list.index(last_subject) + 1
+                if subject_index < len(subjects_list):
+                    remaining_sessions_subjects_pairs[session] = subjects_list[subject_index:]
+                    session_found = True
+                continue  # Move to the next session after processing last subject in a session
+            remaining_sessions_subjects_pairs[session] = subjects_list
+            session_found = True
+
+    return remaining_sessions_subjects_pairs
+
+def navigate_to_search_page(driver):
+    """Navigates to the bill search page and ensures the dropdowns are loaded."""
+    driver.get('https://www.njleg.state.nj.us/bill-search')
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Session')))
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Subject')))
+    logger.info("Session and subject dropdowns loaded successfully.")
+
+def generate_bill_search_data(driver):
+    """Generates a dictionary containing session values as keys and lists of subject values as values."""
+    sessions_subjects_pairs = {}
+    # Wait for the session dropdown to load
+    #WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Session')))
+    navigate_to_search_page(driver)
     session_dropdown = Select(driver.find_element(By.ID, 'Session'))
-    print("Sessions available:")
-    for option in session_dropdown.options:
-        print(f"- {option.text}")
-
-    # Handle Subject Dropdown
-    subject_dropdown = Select(driver.find_element(By.ID, 'Subject'))
-    print("\nSubjects available:")
-    for option in subject_dropdown.options:
-        print(f"- {option.text}")
-
-
-    ####  ITERATE OVER SESSIONS AND SUBJECTS  ####        
-    for session_index in range(len(session_dropdown.options)):
-
-        # Re-fetch the session dropdown at the start of each loop to avoid stale references
-        session_dropdown = Select(driver.find_element(By.ID, 'Session'))
-        session_option = session_dropdown.options[session_index]
-        print(f"Session option: {session_option.text}")
-        
+    # Iterate over each session option
+    for session_option in session_dropdown.options:
         session_value = session_option.get_attribute('value')
-        if session_value:  # Skip the placeholder if present
-            session_dropdown.select_by_value(session_value)
+        # Skip the placeholder option
+        if session_value:
+            session_dropdown.select_by_value(session_value)  # Select the session to load its subjects
+            time.sleep(2)  # Wait for subjects to load based on session selection
+            # Wait for the subject dropdown to load
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Subject')))
+            subject_dropdown = Select(driver.find_element(By.ID, 'Subject'))
+            subjects_list = []
+            # Iterate over each subject option
+            for subject_option in subject_dropdown.options:
+                subject_value = subject_option.get_attribute('value')
+                # Skip the placeholder option
+                if subject_value:
+                    subjects_list.append(subject_value)
+            sessions_subjects_pairs[session_value] = subjects_list
+    return sessions_subjects_pairs
 
-            subject_dropdown = None
+
+
+def select_session_and_subject(driver, session_value, subject_value):
+    """Selects a specific session and subject based on provided values."""
+            #### HANDLE SUBJECT DROPDOWN  ####
+    logger.info(f"Current Browser URL: {driver.current_url}")
+    navigate_to_search_page(driver)
+    try:
+        # Wait for the subject dropdown to refresh after selecting the session
+        subject_dropdown = Select(driver.find_element(By.ID, 'Subject'))
+        #WebDriverWait(driver, 10).until(EC.staleness_of(subject_dropdown.first_selected_option))
+        subject_dropdown.select_by_value(subject_value)
+    except WebDriverException as e:
+        logger.warning(f"Subject dropdown is stale. Refreshing the page... Location 2. Webdriver error {e}")
+
+    try: 
+        session_dropdown = Select(driver.find_element(By.ID, 'Session'))
+        #WebDriverWait(driver, 10).until(EC.staleness_of(session_dropdown.first_selected_option))
+        session_dropdown.select_by_value(session_value)
+    except WebDriverException as e:
+        logger.warning(f"Session dropdown is stale. Refreshing the page... Location 3. Webdriver error {e}")
+
+    logger.info(f"Selected session '{session_value}' and subject '{subject_value}'.")
+    logger.info("Clicking the search button...")
+    search_button = driver.find_element(By.ID, 'Search')
+    search_button.click()
+    # Check if the search button was clicked by verifying the presence of the bill list
+
+
+def scrape_bills(driver, session_value, subject_value):
+    """Clicks the search button and scrapes bill information."""
+    bills_info = []
+    while True:
+        bill_ul_tags = None
+        try:
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'billList')))
+            # Locate the billList div
+            bill_list_div = driver.find_element(By.ID, 'billList')
+            # Find all <ul> tags within the billList div
+            bill_ul_tags = bill_list_div.find_elements(By.TAG_NAME, 'ul')
+        except WebDriverException as e:
+            logger.warning(f"Bill list did not load. Refreshing the page... Location 4. Webdriver error {e}")
+            driver.get(driver.current_url)
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'billList')))
+            bill_list_div = driver.find_element(By.ID, 'billList')
+            bill_ul_tags = bill_list_div.find_elements(By.TAG_NAME, 'ul')   
+        logger.info(f"Number of bills on page: {len(bill_ul_tags)}")
+        for bill_ul in bill_ul_tags:
+            bill_info = {}
+            bill_url = bill_ul.find_element(By.CLASS_NAME, 'main-bill-search_billNumber__EWhqA').get_attribute('href')
+            bill_number = bill_ul.find_element(By.CLASS_NAME, 'main-bill-search_billNumber__EWhqA').text
+            bill_info['session'] = session_value
+            bill_info['subject'] = subject_value
+            bill_info['bill_url'] = bill_url
+            bill_info['bill_number'] = bill_number
+            bills_info.append(bill_info)
+            #logger.info(f"Scraped {len(bill_info)} bills for {session_value} and {subject_value}.")
+        # Check for and click on the next page button, if it exists
+        try:
+            if driver.find_element(By.XPATH, "//a[contains(@class, 'bsearch-pagination_next__ZACwL')]").is_displayed():
+                logger.info(f"Navigating to the next page for {session_value} and {subject_value}.")
+                # Corrected XPath to match the actual 'Next' button based on its class
+                next_page_button = driver.find_element(By.XPATH, "//a[contains(@class, 'bsearch-pagination_next__ZACwL')]")
+                next_page_button.click()
+                #logger.info("Navigated to the next page.")
+                time.sleep(2)  # Adjust sleep time as necessary for page loading
+            else:
+                logger.warning("No more pages to process.")
+                break
+        except NoSuchElementException as e:
+            logger.warning("No page button found. Exiting loop.")
+            break  # No more pages to process
+    logger.info(f"Finished scraping bills for session '{session_value}' and subject '{subject_value}'. Number of bills scraped: {len(bills_info)}")
+    return bills_info
+
+
+def supaUpload(data):
+    url : str = 'https://zwmhjgftwvkcdirgvxwj.supabase.co'
+    key : str = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3bWhqZ2Z0d3ZrY2Rpcmd2eHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDkwNTQ2NTAsImV4cCI6MjAyNDYzMDY1MH0.Of7v3vo-zPdfTbN2o9vfk5_U3kEtMUTo1tS-JQDlOmI'
+    supabase: Client = create_client(url, key)
+    logger.info("Uploading data to Supabase...")
+    response = None
+    try:
+        response = supabase.table('dummy_table2').insert(data).execute()
+        logger.info("Data uploaded successfully.")
+    except Exception as e:
+        logger.warning(f"Upload failed. Exception: {e}")
+    return response
+
+def billText(driver, data):
+    max_retries = 3
+
+    for bill_info in data:
+        url = bill_info['bill_url']
+        attempts = 0
+        bill_text = ""
+
+        while attempts < max_retries:
             try:
-                # After selecting a session, refetch the subject dropdown to ensure it's not stale
-                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Subject')))
-                subject_dropdown = Select(driver.find_element(By.ID, 'Subject'))
-            except WebDriverException:
-                print("Subject dropdown is stale. Refreshing the page... Location 1")
-                driver.get(driver.current_url)
-                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Subject')))
+                driver.get(url)
+                # Navigate to HTML bill
+                html_link = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable((By.XPATH, "//a[contains(@class, 'bill-text_billDocLink__ptXXl') and contains(text(), 'HTML Format')]"))
+                )
+                html_link.click()
+                new_url = driver.current_url
+                logger.info(f"Successful navigation to bill page. The URL after clicking the HTML format link is: {new_url}")
+                
+                # Extract bill text
+                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "WordSection3")))
+                word_section_div = driver.find_element(By.CLASS_NAME, "WordSection3")
+                mso_normal_elements = word_section_div.find_elements(By.CLASS_NAME, "MsoNormal")
+                bill_text = ' '.join([element.text for element in mso_normal_elements if element.text.strip() != ''])
+                bill_info["bill_text"] = bill_text
+                break  # Success, exit loop
+            except (NoSuchElementException, WebDriverException) as e:
+                logger.warning(f"Attempt {attempts + 1} for URL {url} failed with error: {e}")
+                if attempts >= max_retries - 1:
+                    logger.error(f"Max retries reached for URL {url}. Skipping.")
+                    bill_info["bill_text"] = None
+                    break  # Exit loop on max retries
+            except Exception as e:
+                logger.error(f"Unexpected error for URL {url}: {e}")
+                bill_info["bill_text"] = None
+                break  # Exit loop on unexpected errors
+            finally:
+                attempts += 1
+
+    logger.info(f"Size of bill text data: {len(data)}.")
+    return data
 
 
 
+def main(driver, sessions_subjects_pairs):
+    """Main function to setup driver and loop through sessions and subjects to scrape bills."""
+    bills_info = []
+
+    try:
+        for session_value, subject_values in sessions_subjects_pairs.items():
+            for subject_value in subject_values:
+                
+                select_session_and_subject(driver, session_value, subject_value)
+                data = scrape_bills(driver, session_value, subject_value)
+                final_data = billText(driver, data)
+                try:
+                    supaUpload(final_data)
+                except Exception as e:
+                    logger.warning(f"Upload failed. Exception: {e}")
+                bills_info.extend(final_data)
+                logger.info(f"Finished scraping bills {len(bills_info)} for session '{session_value}' and subject '{subject_value}'.")
+                store_last_scraped_info(session_value, subject_value)
+                # Process scraped data or save to file
+        return bills_info
+    finally:
+        driver.quit()
+
+if __name__ == "__main__":
+    driver = setup_driver()
+    last_session, last_subject = None, None
+    sessions_subjects_pairs = None
+
+    last_session, last_subject = load_last_scraped_info()
+    logger.info(f"Last scraped session: {last_session}, Last scraped subject: {last_subject}")
+    sessions_subjects_pairs = generate_remaining_bill_search_data(driver, last_session, last_subject)
 
             
-            for subject_index in range(len(subject_dropdown.options)):
+    # Example usage with multiple sessions and subjects
+    #sessions_subjects_pairs = generate_bill_search_data(driver)
 
+    bills_info = main(driver,sessions_subjects_pairs)
 
-                #### HANDLE SUBJECT DROPDOWN  ####
-                subject_value = None
-                try:
-                    # Re-fetch the subject dropdown at the start of each inner loop
-                    subject_dropdown = Select(driver.find_element(By.ID, 'Subject'))
-                    subject_option = subject_dropdown.options[subject_index]
-                    subject_value = subject_option.get_attribute('value')
-                    subject_text = subject_option.text
-                    print(f"Subject option: {subject_text}")
-                except WebDriverException:
-                    print("Subject dropdown is stale. Refreshing the page... Location 2")
-                    driver.get(driver.current_url)
-                    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Subject')))
-                    subject_dropdown = Select(driver.find_element(By.ID, 'Subject'))
-                    subject_option = subject_dropdown.options[subject_index]
-                    subject_value = subject_option.get_attribute('value')
-                    subject_text = subject_option.text
-                
-                if subject_value:  # Skip placeholder
-                    try: 
-                        subject_dropdown.select_by_value(subject_value)
-                        print(f"Current URL {driver.current_url}")
-                        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Session')))
-                        session_dropdown = Select(driver.find_element(By.ID, 'Session'))
-                        session_dropdown.select_by_value(session_value)  # Re-select the current session
-                    except WebDriverException:
-                        print("Subject dropdown is stale. Refreshing the page... Location 3")
+    df = pd.DataFrame(bills_info, index=None)
+    df.to_csv("test3.csv", index=False)
 
-
-                        # Wait for the 'Search' button to be clickable
-                    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Search')))
-                    # Find the 'Search' button
-                    search_button = driver.find_element(By.ID, 'Search')
-                    # Print the text of the button
-                    if search_button.text == 'SUBMIT':  # Replace with the actual text on the button
-                        search_button.click()
-                        print("The button found has the expected text.")
-                    else:
-                        print("The button found does not have the expected text.")
-
-                    time.sleep(5)
-                
-                    #bill_collection = []
-                    
-                   # Wait for the pagination container to appear
-                    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'bsearch-pagination_paginationCenter__us1DL')))
-
-                    # Locate all the pagination buttons within the container
-                    pagination_buttons = driver.find_elements(By.CSS_SELECTOR, '.bsearch-pagination_paginationCenter__us1DL > button')
-
-                    # IMPLEMENT PAGE NUMBER CHECK FOR RESULTS
-
-                    for i in range(len(pagination_buttons)):
-                        # Re-identify the pagination buttons to avoid stale element reference errors
-                        pagination_buttons = driver.find_elements(By.CSS_SELECTOR, '.bsearch-pagination_paginationCenter__us1DL > button')
-                        pagination_button = pagination_buttons[i]
-                        
-                        # Click the pagination button
-                        pagination_button.click()
-
-
-                        # Wait for the bill list to load
-                        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'billList')))
-
-                        # Locate the billList div
-                        bill_list_div = driver.find_element(By.ID, 'billList')
-
-                        # Find all <ul> tags within the billList div
-                        bill_ul_tags = bill_list_div.find_elements(By.TAG_NAME, 'ul')
-
-                        print(f"Number of bills on page {i + 1}: {len(bill_ul_tags)}")
-
-                        # Initialize a list to hold all collected bill information
-                        bills_info = []
-
-                       
-                        bill_links = [bill_ul.find_element(By.CLASS_NAME, 'main-bill-search_billNumber__EWhqA').get_attribute('href') for bill_ul in bill_ul_tags]
-
-                        search_url = driver.current_url
-
-                        # Iterate over each <ul> to extract bill information
-                        for bill_ul in bill_ul_tags:
-
-                            print(f"Current URL while navigating bills {driver.current_url}")
-                            bill_info = {}
-
-                            # Extract the bill number and URL
-                            bill_info['session'] = session_value
-                            bill_info['subject'] = subject_text
-                            bill_number_element = bill_ul.find_element(By.CLASS_NAME, 'main-bill-search_billNumber__EWhqA')
-                            bill_info['bill_number'] = bill_number_element.text.strip()
-                            bill_info['url'] = bill_number_element.get_attribute('href')
-                            
-                            # Extract the synopsis
-                            synopsis_element = bill_ul.find_element(By.CLASS_NAME, 'main-bill-search_synopsis__h4mlL')
-                            bill_info['synopsis'] = synopsis_element.text.strip()
-                            
-                            # Attempt to extract the last session bill number and identical bill number, if present
-                            label_elements = bill_ul.find_elements(By.CLASS_NAME, 'main-bill-search_label__mWbTn')
-                            for label_element in label_elements:
-                                if "Last Session Bill Number" in label_element.text:
-                                    bill_info['last_session_bill_number'] = label_element.find_element(By.TAG_NAME, 'a').text.strip()
-                                elif "Identical Bill Number" in label_element.text:
-                                    bill_info['identical_bill_number'] = label_element.find_element(By.TAG_NAME, 'a').text.strip()
-
-                            # Navigate to the bill text page and extract the bill text
-                            driver.get(bill_info['url'])
-
-                            
-                            bill_url = driver.current_url
-                            print(f"Bill URL: {bill_url}")
-
-                                ####  NAVIGATE TO HTML BILL ####
-
-                            try:
-
-                                # Wait for the HTML format link to be clickable
-                                html_link = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(@class, 'bill-text_billDocLink__ptXXl') and contains(text(), 'HTML Format')]")))
-                                # Click the HTML format link
-                                html_link.click()
-                                # Wait for the URL to change to the new page with HTML format
-                                print(driver.current_url)
-                                # Store the new URL and print it
-                                new_url = driver.current_url
-                                print(f"The URL after clicking the HTML format link is: {new_url}")
-                            except Exception as e:
-                                print(f"An error occurred while navigating to bill page: {e}")
-
-
-                            
-
-
-                            try:    
-                                #Wait for the div with class 'WordSection3' to be present
-                                WebDriverWait(driver, 10).until(
-                                    EC.presence_of_element_located((By.CLASS_NAME, "WordSection3"))
-                                )
-
-                                # Find the div with class 'WordSection3'
-                                word_section_div = driver.find_element(By.CLASS_NAME, "WordSection3")
-
-                                # Find all p tags with class 'MsoNormal' within the div
-                                mso_normal_elements = word_section_div.find_elements(By.CLASS_NAME, "MsoNormal")
-
-                                # Extract the text from each p tag
-                                bill_texts = [element.text for element in mso_normal_elements if element.text.strip() != '']
-
-                                # Concatenate all the text into one large string
-                                bill_info["bill_text"] = ' '.join(bill_texts)
-                            except Exception as e:
-                                print("Bill text extraction failed.")
-
-
-                            #data.append({'session': session_value, 'subject': subject_text, 'data': })
-                            
-                            # Collect number of pages
-
-                            # Iterate over the pages
-
-                            # Collect bill data from each page
-
-                            # Append to data list
-
-                            # Navigate to next page
-
-                            # Repeat until all pages are collected
-
-                                    
-                            # Navigate to search url to avoid stale element reference errors
-                            driver.get(search_url)
-                            print(f" Bll Info: {bill_info}")
-                            bills_info.append(bill_info)
-                            print(f"Current URL {driver.current_url}")
-
-                        data.extend(bills_info)
-
-    df = pd.DataFrame(data)
-    
-    return df
-
-
-max_retries = 10  # Maximum number of retries
-attempts = 0     # Current attempt
-
-while attempts < max_retries:
-    driver = setup_driver()  # Initialize WebDriver outside try-except to ensure it's accessible in finally
-    try:
-        df = main_logic(driver)  # Attempt to execute main logic and collect data
-        #df = pd.DataFrame(data)  # Convert collected data to DataFrame
-        print(df)  # Optionally print or process the DataFrame
-        break  # Break the loop if operation was successful
-    except Exception as e:  # Catching a general exception for simplicity; refine as needed
-        print(f"An error occurred: {e}")
-        attempts += 1
-        print(f"Attempt {attempts} of {max_retries}. Retrying...")
-        time.sleep(5)
-    finally:
-        driver.quit()  # Properly close the WebDriver session
-
-if attempts == max_retries:
-    print("Maximum retries reached. Exiting program.")
+    # Delete the last scraped file
+    if os.path.exists("last_scraped.txt"):
+        os.remove("last_scraped.txt")
