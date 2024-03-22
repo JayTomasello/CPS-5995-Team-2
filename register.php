@@ -24,7 +24,6 @@ if (isset($_COOKIE['email'])) {
                     $command = "python send_email.py $email";
                     exec($command, $output, $return_var);
                     $verif_code = $output[0];
-                    echo $verif_code;
                     echo "<br><h2 class='text-center'>A verification code has been sent to $email. Please input it below to complete your account registration.</h2>";
                     echo "<form class='text-center m-5' action='' method='POST'>";
                     echo "<div class='mb-3'>
