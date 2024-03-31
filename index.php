@@ -29,7 +29,6 @@ if ((!isset($_COOKIE['email'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['
 
 <div class="d-flex justify-content-evenly vh-100" style="background-color: rgb(170, 159, 91)">
 
-
     <!-- AI Lawyer -->
     <div class="col-4 h-auto d-inline-block my-4 rounded-5 border-3 <?php if (!isset($_COOKIE['email'])) {
                                                                         echo 'disabled';
