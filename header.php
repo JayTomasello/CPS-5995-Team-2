@@ -73,10 +73,9 @@ include 'dbconfig.php';
     <script>
         function select(head_category_name) {
             // Deselect the active Button
-            if (document.getElementById("head_" + head_category_name).classList.contains("active")) {
+            if (document.getElementById("head_" + head_category_name).ariaPressed == "false") {
                 document.getElementById("head_" + head_category_name).classList.remove("active");
                 document.getElementById("popup_" + head_category_name).classList.add("visually-hidden");
-                console.log("Deselected " + head_category_name);
             } else {
                 // Activate the Button
                 let elements = document.getElementsByName("head_category");
@@ -92,7 +91,7 @@ include 'dbconfig.php';
                 }
 
                 document.getElementById("popup_" + head_category_name).classList.remove("visually-hidden");
-                console.log("Selected " + head_category_name);
+
             }
         }
     </script>
@@ -120,13 +119,14 @@ include 'dbconfig.php';
     $result1 = pg_query($conn, $query1);
     while ($row = pg_fetch_assoc($result1)) {
         $headCategory = str_replace(' ', '_', $row['head_category']);
-        echo ('<div class="position-absolute dropdown-menu visually-hidden" name="head_category_display" style="z-index:1000" id="popup_' . $headCategory . '">');
+        echo ('<div class="d-flex m-3 flex-wrap dropdown-menu visually-hidden" name="head_category_display" id="popup_' . $headCategory . '" style="z-index:1000">');
         $query2 = "SELECT name FROM subjects WHERE head_category = '" . $row['head_category'] . "'";
         $result2 = pg_query($conn, $query2);
         for ($i = 0; $i < pg_num_rows($result2); $i++) {
             $row2 = pg_fetch_assoc($result2);
-            echo ('<button class="dropdown-item" onclick="search(' . $row2['name'] . ')" name="' . $row2['name'] . '">' . $row2['name'] . '</button>');
+            echo ('<button class="btn" onclick="search(' . $row2['name'] . ')" name="' . $row2['name'] . '">' . $row2['name'] . '</button>');
         }
+
         echo ('</div>');
     }
     ?>
