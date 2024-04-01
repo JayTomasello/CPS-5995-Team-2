@@ -27,41 +27,66 @@ if ((!isset($_COOKIE['email'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['
 }
 ?>
 
-<div class="d-flex justify-content-evenly vh-100" style="background-color: rgb(170, 159, 91)">
+<div class="d-flex vh-100" style="background-color: rgb(170, 159, 91)">
 
-    <!-- AI Lawyer -->
-    <div class="col-4 h-auto d-inline-block my-4 rounded-5 border-3 <?php if (!isset($_COOKIE['email'])) {
-                                                                        echo 'disabled';
-                                                                    } ?>" style="background-color:<?php echo (!isset($_COOKIE['email']) ? 'lightgrey' : 'white'); ?>">
-        <div class="h-100 m-1 rounded-5" style="background-color: <?php echo (!isset($_COOKIE['email']) ? 'lightgrey' : 'rgb(80, 104, 148)'); ?>;">
-            <div class="d-inline-flex m-4">
-                <input class="col-12 input-group-text rounded-5 <?php if (!isset($_COOKIE['email'])) {
-                                                                    echo 'disabled';
-                                                                } ?>" placeholder="<?php if (!isset($_COOKIE['email'])) {
-                                                                                        echo 'Login/Register as a Subscribed User';
-                                                                                    } else {
-                                                                                        echo 'Ask about a document...';
-                                                                                    } ?>" <?php if (!isset($_COOKIE['email'])) {
-                                                                                                echo 'disabled';
-                                                                                            } ?>>
-                <img class="img mx-5 <?php if (!isset($_COOKIE['email'])) {
-                                            echo 'disabled';
-                                        } ?>" src="./robot lawyer.png" style="width:100px;">
+    <div class="d-flex col-4">
+        <!-- AI Lawyer -->
+        <?php
+        if (!isset($_COOKIE['email'])) {
+            echo ("
+        <div class='justify-content-between col-4 w-100 disabled' style='background-color: lightgrey'>
+
+            <div class='d-flex w-100 m-3 justify-content-evenly'>
+                <input class='col-8 input-group-text text-light rounded-5 disabled' placeholder='Login/Register as a Subscribed User'>
+                <img class='img disabled' src='./robot lawyer.png' style='width:100px;'>
             </div>
-            <div class="m-4 p-3 h-75 rounded-5 <?php if (!isset($_COOKIE['email'])) {
-                                                    echo 'disabled';
-                                                } ?>" style="background-color:<?php echo (!isset($_COOKIE['email']) ? 'lightgrey' : 'white'); ?>">
-                AI Lawyer Response
+
+            <div class='rounded-5 disabled h-75 text-light text-wrap m-2 p-3' style='background-color: grey'>
+                Please login or sign up to use our robo-lawyer!
             </div>
         </div>
+        ");
+        } else {
+            echo ("
+            <div class='justify-content-between col-4 w-100 disabled' style='background-color: lightgrey'>
+
+            <div class='d-flex w-100 m-3 justify-content-evenly'>
+                <input class='col-8 input-group-text text-light rounded-5 disabled' placeholder='Login/Register as a Subscribed User'>
+                <img class='img disabled' src='./robot lawyer.png' style='width:100px;'>
+            </div>
+
+            <div class='rounded-5 disabled text-light text-wrap m-2 p-3' style='background-color: grey'>
+            </div>
+            </div>
+            ");
+        }
+        ?>
     </div>
 
     <!-- Document Viewer -->
-    <div class="col-7 h-auto d-inline-block mt-5 m-1 rounded-5 border-3" style="background-color:white">
-        <div class="h-100 rounded-5 m-1" style="background-color: rgb(80, 104, 148);">
-            <div class="m-4 p-3 h-75 rounded-5 my-3" style="background-color:white">Source Documents and Summaries</div>
+    <div class="d-inline-flex col-8 p-4">
+        <div class="w-100 bg-white rounded-5 p-4">
+            <div class="bg-secondary rounded-5 p-3 d-flex flex-column align-items-stretch">
+                <h1 name="search_result_title">Document Viewer</h1>
+                <form name="filter_by_session" method="GET" action="">
+                    <label for="session-filter">Filter by Session:</label>
+                    <select name="session-filter" id="session-filter">
+                        <option value="">All Sessions</option>
+                        <option value="session1">Session 1</option>
+                        <option value="session2">Session 2</option>
+                        <option value="session3">Session 3</option>
+                        <!-- Add more options as needed -->
+                    </select>
+                    <button type="submit">Filter</button>
+                </form>
+            </div>
+            <div name="search_result_list" class="container">
+
+            </div>
+
         </div>
     </div>
+
 
 </div>
 

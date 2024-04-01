@@ -68,34 +68,49 @@ include 'dbconfig.php';
         </div>
     </nav>
 
+
+    <!-- SELECT FUNCTION -->
     <script>
-        function select(head_category) {
-            // all_categories = document.getElementsByName("head_category_display");
+        function select(head_category_name) {
+            // Deselect the active Button
+            if (document.getElementById("head_" + head_category_name).classList.contains("active")) {
+                document.getElementById("head_" + head_category_name).classList.remove("active");
+                document.getElementById("popup_" + head_category_name).classList.add("visually-hidden");
+                console.log("Deselected " + head_category_name);
+            } else {
+                // Activate the Button
+                let elements = document.getElementsByName("head_category");
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].classList.remove("active");
+                }
+                document.getElementById("head_" + head_category_name).classList.add("active");
 
-            // for (var i = 0; i < all_categories.length; i++) {
-            //     var dropdown = all_categories[i];
-            //     dropdown.classList.add('visually-hidden');
-            // }
+                // Display the Popup
+                let elements2 = document.getElementsByName("head_category_display");
+                for (let i = 0; i < elements2.length; i++) {
+                    elements2[i].classList.add("visually-hidden");
+                }
 
-            var selected = document.getElementById(head_category);
-            selected.classList.remove('visually-hidden');
+                document.getElementById("popup_" + head_category_name).classList.remove("visually-hidden");
+                console.log("Selected " + head_category_name);
+            }
         }
     </script>
 
     <!-- HEAD CATEGORIES -->
     <nav class="navbar navbar-expand-lg bg-secondary">
-        <div class="btn-group justify-content-evenly">
-            <ul class="list-group list-group-horizontal">
-                <?php
-                $query = "SELECT DISTINCT head_category FROM subjects";
-                $result = pg_query($conn, $query);
-                while ($row = pg_fetch_assoc($result)) {
-                    echo ('<li class="list-group-item">');
-                    echo ('<button class="btn" data-bs-toggle="button" name="head_category" onclick="select(' . $row['head_category'] . ')" aria-expanded="false">' . $row['head_category'] . '</button>');
-                    echo ('</li>');
-                }
-                ?>
-            </ul>
+        <div class="container-fluid p-1 justify-content-around">
+            <?php
+            $query = "SELECT DISTINCT head_category FROM subjects";
+            $result = pg_query($conn, $query);
+
+            while ($row = pg_fetch_assoc($result)) {
+                echo ('<div class="list-group-item" >');
+                $headCategory = str_replace(' ', '_', $row['head_category']);
+                echo ('<button class="btn btn-dark text-light" data-bs-toggle="button" name="head_category" id="head_' . $headCategory . '" onclick="select(\'' . $headCategory . '\')" aria-expanded="false">' . $row['head_category'] . '</button>');
+                echo ('</div>');
+            }
+            ?>
         </div>
     </nav>
 
@@ -104,12 +119,13 @@ include 'dbconfig.php';
     $query1 = "SELECT DISTINCT head_category FROM subjects";
     $result1 = pg_query($conn, $query1);
     while ($row = pg_fetch_assoc($result1)) {
-        echo ('<div class="dropdown-menu visually-hidden" name="head_category_display" id="' . $row['head_category'] . '">');
+        $headCategory = str_replace(' ', '_', $row['head_category']);
+        echo ('<div class="position-absolute dropdown-menu visually-hidden" name="head_category_display" style="z-index:1000" id="popup_' . $headCategory . '">');
         $query2 = "SELECT name FROM subjects WHERE head_category = '" . $row['head_category'] . "'";
         $result2 = pg_query($conn, $query2);
         for ($i = 0; $i < pg_num_rows($result2); $i++) {
             $row2 = pg_fetch_assoc($result2);
-            echo ('<a class="dropdown-item" name="' . $row2['name'] . '">' . $row2['name'] . '</a>');
+            echo ('<button class="dropdown-item" onclick="search(' . $row2['name'] . ')" name="' . $row2['name'] . '">' . $row2['name'] . '</button>');
         }
         echo ('</div>');
     }
