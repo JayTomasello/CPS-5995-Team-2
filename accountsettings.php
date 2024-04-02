@@ -1,3 +1,7 @@
+<?php
+include 'dbconfig.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,10 +24,11 @@
         }
 
         .container {
-            padding-top: 50px; /* Adjust top padding to fit below navbar */
+            padding-top: 50px;
+            /* Adjust top padding to fit below navbar */
         }
 
-        .btn-check:checked + .btn-outline-dark {
+        .btn-check:checked+.btn-outline-dark {
             color: #000;
         }
     </style>
@@ -31,8 +36,8 @@
 
 <body>
 
-    <?php 
-    if (!isset($_COOKIE['email'])) { 
+    <?php
+    if (!isset($_COOKIE['email'])) {
         echo "<style>
             body {
                 background-image: url(./Courthouse.jpg);
@@ -64,7 +69,7 @@
         </head>
 
         <body class='container'>;
-            <div class='message-box'><h4>You must login as a Subscribed User to view this page.</h4></div>
+            <div class='message-box text-dark'><h4>You must login as a Subscribed User to view this page.</h4></div>
 
             </body>
 
@@ -75,98 +80,17 @@
 
     <?php include('headerSettings.php'); ?>
 
-    <?php 
-    $lawCategories = [
-        "Abortion",
-        "Agriculture",
-        "Alcohol",
-        "Animals",
-        "Arts & Culture",
-        "Authorities",
-        "Aviation",
-        "Banking & Finance",
-        "Boating",
-        "Bonds",
-        "Charities/Non-Profits",
-        "Child Support",
-        "Children",
-        "Civil Actions",
-        "Civil Rights",
-        "Civil Service",
-        "Commemorations",
-        "Commerce",
-        "Commissions",
-        "Communications",
-        "Community Development",
-        "Constitutional Amendments",
-        "Consumer Affairs",
-        "Corporations",
-        "Corrections",
-        "Crime Victims",
-        "Crimes and Penalties",
-        "Criminal Procedures",
-        "Domestic Relations",
-        "Domestic Violence",
-        "Economic Development",
-        "Education",
-        "Elections",
-        "Energy",
-        "Environment",
-        "Ethics",
-        "Federal Regulations",
-        "Food",
-        "Gambling",
-        "Governor",
-        "Health",
-        "Higher Education",
-        "Historic Preservation",
-        "Housing",
-        "Human Services",
-        "Immigration",
-        "Initiative and Referendum",
-        "Insurance",
-        "International Affairs",
-        "Interstate Relations",
-        "Judiciary",
-        "Juvenile Justice",
-        "Labor",
-        "Land Use/Zoning",
-        "Legislature",
-        "Libraries",
-        "Lobbying",
-        "Local Budget",
-        "Local Government",
-        "Local Officers",
-        "Marijuana",
-        "Minority and Ethnic Affairs",
-        "Motor Vehicles",
-        "Natural Disasters",
-        "New Jersey History",
-        "Parole",
-        "Pensions",
-        "Probation",
-        "Property",
-        "Prosecutors",
-        "Public Contracts",
-        "Public Employees",
-        "Public Fees",
-        "Public Records",
-        "Public Safety",
-        "Public Utilities",
-        "Regulated Professions",
-        "Regulatory Oversight",
-        "Science and Technology",
-        "Senior Citizens",
-        "Smoking and Tobacco",
-        "Sports and Recreation",
-        "State Government",
-        "Taxation",
-        "Terrorism",
-        "Transportation",
-        "Veterans and Military",
-        "Wills, Trusts, and Estates",
-        "Women"
-    ];?>
+    <?php
+
+    $query = "SELECT name FROM subjects";
+    $result = pg_query($conn, $query);
+    $lawCategories = array();
+    while ($row = pg_fetch_assoc($result)) {
+        $lawCategories[] = $row['name'];
+    }
+    sort($lawCategories); // Sort the array alphabetically
+
+    ?>
 
     <div class="container">
 
@@ -180,45 +104,83 @@
         </form><br>
 
         <?php
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        if (isset($_POST['deregister'])) {
-            $email = $_POST['Email'];
-            $true_email = $_POST['true_email'];
-            if ($email == $true_email) {
-                $command = "python userDeregister.py $true_email";
-                exec($command, $output, $return_var);
-                if (isset($output[0])) {
-                    if ($output[0] == 'Deleted') {
-                        header("Location: ./regout.php");
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (isset($_POST['deregister'])) {
+                $email = $_POST['Email'];
+                $true_email = $_POST['true_email'];
+                if ($email == $true_email) {
+                    $command = "python userDeregister.py $true_email";
+                    exec($command, $output, $return_var);
+                    if (isset($output[0])) {
+                        if ($output[0] == 'Deleted') {
+                            header("Location: ./regout.php");
+                        } else {
+                            echo "<h4 style='color:red;text-align:center;'>" . $output[0] . "</h4>";
+                        }
                     } else {
-                        echo "<h4 style='color:red;text-align:center;'>" . $output[0] . "</h4>";
+                        echo "<h4 style='color:red;text-align:center;'>Could not delete.</h4>";
                     }
                 } else {
-                    echo "<h4 style='color:red;text-align:center;'>Could not delete.</h4>";
+                    echo "<h4 style='color:red;text-align:center;'>Incorrect Email</h4>";
                 }
-            } else {
-                echo "<h4 style='color:red;text-align:center;'>Incorrect Email</h4>";
             }
-    }
-}
+        }
 
-    ?>
+        ?>
 
-        <form class="bg-secondary rounded-5 p-3">
+        <?php
+        // Identify which subjects the user currently has selected
+        $query = "SELECT uid FROM sub_user WHERE email = '" . $_COOKIE['email'] . "'";
+        $result = pg_query($conn, $query);
+        $uid = pg_fetch_assoc($result)['uid'];
+
+        $query = "SELECT subject FROM user_subject WHERE uid = $uid";
+        $result = pg_query($conn, $query);
+        $selectedCategories = array();
+        while ($row = pg_fetch_assoc($result)) {
+            $selectedCategories[] = $row['subject'];
+        }
+        ?>
+
+        <form class="bg-secondary rounded-5 p-3" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
             <h3 class="text-light">I wish to receive updates on laws regarding...</h3>
-
             <div class="d-flex flex-wrap rounded-5 p-2">
-                <?php foreach ($lawCategories as $category) : ?>
-                    <?php $categoryId = str_replace(' ', '', strtolower($category)); ?>
-                    <div class="form-check form-check-inline m-1">
-                        <input type="checkbox" class="btn-check" id="<?php echo $categoryId; ?>" autocomplete="off">
-                        <label class="form-checked-success btn btn-outline-dark text-light" for="<?php echo $categoryId; ?>"><?php echo $category; ?></label>
-                    </div>
-                <?php endforeach; ?>
+                <?php
+                foreach ($lawCategories as $category) {
+                    $categoryNoSpace = str_replace(' ', '_', $category);
+                    if (in_array($category, $selectedCategories)) {
+                        echo ('<input class="btn-check visually-hidden" type="checkbox" id="' . $categoryNoSpace . '" name="selectedCategories[]" value="' . $category . '" checked>');
+                        echo ('<label class="btn text-light btn-outline-dark m-2" for="' . $categoryNoSpace . '">' . $category . '</label>');
+                    } else {
+                        echo ('<input class="btn-check visually-hidden" type="checkbox" id="' . $categoryNoSpace . '" name="selectedCategories[]" value="' . $category . '">');
+                        echo ('<label class="btn text-light btn-outline-dark m-2" for="' . $categoryNoSpace . '">' . $category . '</label>');
+                    }
+                }
+                ?>
             </div>
-
-            <button type="submit" class="btn btn-primary">Save Preferences</button>
+            <button type="submit" name="save_legal_preferences" class="btn btn-primary">Save Preferences</button>
         </form>
+
+        <?php
+        // Check if the form has been submitted
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_legal_preferences'])) {
+            $query = "SELECT uid FROM sub_user WHERE email = '" . pg_escape_string($conn, $_COOKIE['email']) . "'";
+            $result = pg_query($conn, $query);
+            $uid = pg_fetch_assoc($result)['uid'];
+
+            // Delete existing user_subject entries for this user
+            $deleteQuery = "DELETE FROM user_subject WHERE uid = $uid";
+            pg_query($conn, $deleteQuery);
+
+            // Insert new preferences
+            if (isset($_POST['selectedCategories'])) {
+                foreach ($_POST['selectedCategories'] as $category) {
+                    $insertQuery = "INSERT INTO user_subject (uid, subject) VALUES ($uid, '" . pg_escape_string($conn, $category) . "')";
+                    pg_query($conn, $insertQuery);
+                }
+            }
+        }
+        ?>
 
     </div>
 
