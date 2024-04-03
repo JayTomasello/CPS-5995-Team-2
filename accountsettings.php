@@ -177,6 +177,7 @@ include 'dbconfig.php';
                         // Delete existing user_subject entries for this user
                         $deleteQuery = "DELETE FROM user_subject WHERE uid = $uid";
                         pg_query($conn, $deleteQuery);
+                        
                         foreach ($_POST['selectedCategories'] as $category) {
 
                         $insertQuery = "INSERT INTO user_subject (uid, subject) VALUES ($uid, '" . pg_escape_string($conn, $category) . "')";
