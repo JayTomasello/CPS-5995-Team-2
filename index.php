@@ -147,52 +147,136 @@ if ((!isset($_COOKIE['email'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['
                         }
                     } else {
                         // If the user has specified a search query
+                        $subject = $_GET['subject_search'];
+                        if (isset($_GET['session_search'])) {
+                            // If the user has specified a session
+                            $session = $_GET['session_search'];
+                            $query = "SELECT * FROM dummy_table2 WHERE subject = '$subject' AND session = '$session' AND bill_summary is not NULL LIMIT 100";
+                        } else {
+                            // If the user has not specified a session
+                            $query = "SELECT * FROM dummy_table2 WHERE subject = '$subject' AND bill_summary is not NULL LIMIT 100";
+                        }
+                        // Execute the query
+                        $result = pg_query($conn, $query);
+                        if ($result) {
+                            if (pg_num_rows($result) > 0) {
+                                echo ('<div class="accordion accordion-flush m-3" id="view_bills">');
+                                for ($i = 0; $i < pg_num_rows($result); $i++) {
+                                    $bill_number = pg_fetch_assoc($result)['bill_number'];
+                                    $bill_url = pg_fetch_assoc($result)['bill_url'];
+                                    $session = pg_fetch_assoc($result)['session'];
+                                    $subject = pg_fetch_assoc($result)['subject'];
+                                    $summary = pg_fetch_assoc($result)['bill_summary'];
+
+                                    echo '<div class="accordion-item">';
+                                    echo '<h2 class="accordion-header">';
+                                    echo '<button class="accordion-button collapsed justify-content-evenly" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' . $i . '" aria-expanded="false" aria-controls="collapse' . $i . '">';
+                                    echo '<strong>' . $session . ': ' . $subject . '</strong> --> ' . $bill_number . '';
+                                    echo '</button>';
+                                    echo '</h2>';
+                                    echo '<div id="collapse' . $i . '" class="accordion-collapse collapse" data-bs-parent="#view-bills">';
+                                    echo '<div class="accordion-body">';
+                                    echo ('<h3 class="text-dark"><a href="' . $bill_url . '">View the Source Doc</a></h3>');
+                                    echo ('<p class="text-dark">' . $summary . '</p>');
+                                    echo '</div>';
+                                    echo '</div>';
+                                    echo '</div>';
+                                }
+                                echo ("</div>");
+                            }
+                        }
                     }
                 } else {
-                    // Default Results For Guest User
-                    $query = "SELECT MAX(session) FROM dummy_table2";
-                    $result = pg_query($conn, $query);
-                    $most_recent_session = pg_fetch_assoc($result)['max'];
+                    if (!isset($_GET['subject_search']) && !isset($_GET['session_search'])) {
+                        // Default Results For Guest User
+                        $query = "SELECT MAX(session) FROM dummy_table2";
+                        $result = pg_query($conn, $query);
+                        $most_recent_session = pg_fetch_assoc($result)['max'];
 
-                    // Retrieve all documents from the most recent session year
-                    $query = "SELECT * FROM dummy_table2 WHERE session = '$most_recent_session' AND bill_summary is not NULL LIMIT 100";
+                        // Retrieve all documents from the most recent session year
+                        $query = "SELECT * FROM dummy_table2 WHERE session = '$most_recent_session' AND bill_summary is not NULL LIMIT 100";
 
-                    $result = pg_query($conn, $query);
-                    if ($result) {
-                        if (pg_num_rows($result) > 0) {
-                            echo ('<div class="accordion accordion-flush m-3 rounded-4" id="view_bills">');
-                            $i = 0;
-                            while ($row = pg_fetch_assoc($result)) {
-                                $bill_number = $row['bill_number'];
-                                $bill_url = $row['bill_url'];
-                                $session = $row['session'];
-                                $subject = $row['subject'];
-                                $summary = $row['bill_summary'];
+                        $result = pg_query($conn, $query);
+                        if ($result) {
+                            if (pg_num_rows($result) > 0) {
+                                echo ('<div class="accordion accordion-flush m-3 rounded-4" id="view_bills">');
+                                $i = 0;
+                                while ($row = pg_fetch_assoc($result)) {
+                                    $bill_number = $row['bill_number'];
+                                    $bill_url = $row['bill_url'];
+                                    $session = $row['session'];
+                                    $subject = $row['subject'];
+                                    $summary = $row['bill_summary'];
 
-                                echo '<div class="accordion-item">';
-                                echo '<h2 class="accordion-header">';
-                                echo '<button class="accordion-button collapsed justify-content-evenly" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' . $i . '" aria-expanded="false" aria-controls="collapse' . $i . '">';
-                                echo '<strong>' . $session . ': ' . $subject . '</strong> --> ' . $bill_number . '';
-                                echo '</button>';
-                                echo '</h2>';
-                                echo '<div id="collapse' . $i . '" class="accordion-collapse collapse" data-bs-parent="#view-bills">';
-                                echo '<div class="accordion-body">';
-                                echo ('<h3 class="text-dark"><a href="' . $bill_url . '">View the Source Doc</a></h3>');
-                                echo "<h4 class='text-center'>Summary of Bill</h4>";
-                                echo ('<p class="text-dark">' . $summary . '</p>');
-                                echo '</div>';
-                                echo '</div>';
-                                echo '</div>';
-                                $i++;
+                                    echo '<div class="accordion-item">';
+                                    echo '<h2 class="accordion-header">';
+                                    echo '<button class="accordion-button collapsed justify-content-evenly" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' . $i . '" aria-expanded="false" aria-controls="collapse' . $i . '">';
+                                    echo '<strong>' . $session . ': ' . $subject . '</strong> --> ' . $bill_number . '';
+                                    echo '</button>';
+                                    echo '</h2>';
+                                    echo '<div id="collapse' . $i . '" class="accordion-collapse collapse" data-bs-parent="#view-bills">';
+                                    echo '<div class="accordion-body">';
+                                    echo ('<h3 class="text-dark"><a href="' . $bill_url . '">View the Source Doc</a></h3>');
+                                    echo "<h4 class='text-center'>Summary of Bill</h4>";
+                                    echo ('<p class="text-dark">' . $summary . '</p>');
+                                    echo '</div>';
+                                    echo '</div>';
+                                    echo '</div>';
+                                    $i++;
+                                }
+                                echo ("</div>");
                             }
-                            echo ("</div>");
+                        }
+                    } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['subject_search'])) {
+                        // If the user has specified a subject
+                        $subject = $_GET['subject_search'];
+                        if (isset($_GET['session_search'])) {
+                            // If the user has specified a session
+                            $session = $_GET['session_search'];
+                            $query = "SELECT * FROM dummy_table2 WHERE subject = '$subject' AND session = '$session' AND bill_summary is not NULL LIMIT 100";
+                        } else {
+                            // If the user has not specified a session
+                            $query = "SELECT * FROM dummy_table2 WHERE subject = '$subject' AND bill_summary is not NULL LIMIT 100";
+                        }
+                        $result = pg_query($conn, $query);
+                        if ($result) {
+                            if (pg_num_rows($result) > 0) {
+                                echo ('<div class="accordion accordion-flush m-3 rounded-4" id="view_bills">');
+                                $i = 0;
+                                while ($row = pg_fetch_assoc($result)) {
+                                    $bill_number = $row['bill_number'];
+                                    $bill_url = $row['bill_url'];
+                                    $session = $row['session'];
+                                    $subject = $row['subject'];
+                                    $summary = $row['bill_summary'];
+
+                                    echo '<div class="accordion-item">';
+                                    echo '<h2 class="accordion-header">';
+                                    echo '<button class="accordion-button collapsed justify-content-evenly" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' . $i . '" aria-expanded="false" aria-controls="collapse' . $i . '">';
+                                    echo '<strong>' . $session . ': ' . $subject . '</strong> --> ' . $bill_number . '';
+                                    echo '</button>';
+                                    echo '</h2>';
+                                    echo '<div id="collapse' . $i . '" class="accordion-collapse collapse" data-bs-parent="#view-bills">';
+                                    echo '<div class="accordion-body">';
+                                    echo ('<h3 class="text-dark"><a href="' . $bill_url . '">View the Source Doc</a></h3>');
+                                    echo "<h4 class='text-center'>Summary of Bill</h4>";
+                                    echo ('<p class="text-dark">' . $summary . '</p>');
+                                    echo '</div>';
+                                    echo '</div>';
+                                    echo '</div>';
+                                    $i++;
+                                }
+                                echo ("</div>");
+                            }
                         }
                     }
                 }
+
+
                 ?>
             </div>
 
-            <script>
+            <!-- <script>
                 // Add event listener to the "Filter By Session" select element
                 document.getElementById('session-filter').addEventListener('change', function() {
                     // Get the selected session value
@@ -207,7 +291,7 @@ if ((!isset($_COOKIE['email'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['
                 for (var i = 0; i < viewButtons.length; i++) {
                     viewButtons[i].addEventListener('click', function() {});
                 }
-            </script>
+            </script> -->
 
         </div>
     </div>
