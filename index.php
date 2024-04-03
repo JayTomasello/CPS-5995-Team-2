@@ -143,18 +143,19 @@ if ((!isset($_COOKIE['email'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['
                     $most_recent_session = pg_fetch_assoc($result)['max'];
 
                     // Retrieve all documents from the most recent session year
-                    $query = "SELECT * FROM dummy_table2 WHERE session = '$most_recent_session' LIMIT 100";
+                    $query = "SELECT * FROM dummy_table2 WHERE session = '$most_recent_session' AND bill_summary is not NULL LIMIT 100";
 
                     $result = pg_query($conn, $query);
                     if ($result) {
                         if (pg_num_rows($result) > 0) {
                             echo ('<div class="accordion accordion-flush m-3 rounded-4" id="view_bills">');
-                            for ($i = 0; $i < pg_num_rows($result); $i++) {
-                                $bill_number = pg_fetch_assoc($result)['bill_number'];
-                                $bill_url = pg_fetch_assoc($result)['bill_url'];
-                                $session = pg_fetch_assoc($result)['session'];
-                                $subject = pg_fetch_assoc($result)['subject'];
-                                $summary = pg_fetch_assoc($result)['bill_summary'];
+                            $i = 0;
+                            while ($row = pg_fetch_assoc($result)) {
+                                $bill_number = $row['bill_number'];
+                                $bill_url = $row['bill_url'];
+                                $session = $row['session'];
+                                $subject = $row['subject'];
+                                $summary = $row['bill_summary'];
 
                                 echo '<div class="accordion-item">';
                                 echo '<h2 class="accordion-header">';
@@ -165,10 +166,12 @@ if ((!isset($_COOKIE['email'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['
                                 echo '<div id="collapse' . $i . '" class="accordion-collapse collapse" data-bs-parent="#view-bills">';
                                 echo '<div class="accordion-body">';
                                 echo ('<h3 class="text-dark"><a href="' . $bill_url . '">View the Source Doc</a></h3>');
+                                echo "<h4 class='text-center'>Summary of Bill</h4>";
                                 echo ('<p class="text-dark">' . $summary . '</p>');
                                 echo '</div>';
                                 echo '</div>';
                                 echo '</div>';
+                                $i++;
                             }
                             echo ("</div>");
                         }
