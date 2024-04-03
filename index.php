@@ -91,7 +91,7 @@ if ((!isset($_COOKIE['email'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['
             </div>
 
             <!-- SEARCH RESULTS -->
-            <div name="search_results" class="bg-secondary h-75 overflow-auto">
+            <div name="search_results" class="bg-secondary h-75 rounded-4 overflow-auto bg-dark-subtle">
                 <?php
                 if (isset($_COOKIE['email'])) {
                     // Default Results For Signed In User
@@ -120,17 +120,29 @@ if ((!isset($_COOKIE['email'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['
                         $result = pg_query($conn, $query);
                         if ($result) {
                             if (pg_num_rows($result) > 0) {
-                                echo ("<form name='choose_bill' method='GET'>");
-                                while ($row = pg_fetch_assoc($result)) {
-                                    echo ('<div class="d-flex flex-row bg-light rounded-5 p-2 m-2 align-items-evenly" style="white-space: nowrap;">');
-                                    echo ('<p class="fs-4 text-dark">' . $row['session'] . '</p>');
-                                    echo ('<p class="text-dark">' . $row['subject'] . '</p>');
-                                    echo ('<p class="fs-6 text-dark">' . $row['bill_number'] . '</p>');
-                                    echo ('<p class="fs-6 text-dark">' . $row['bill_url'] . '</p>');
-                                    echo ('<button class="btn btn-primary" type="submit">View</button>');
-                                    echo ('</div>');
+                                echo ('<div class="accordion accordion-flush m-3" id="view_bills">');
+                                for ($i = 0; $i < pg_num_rows($result); $i++) {
+                                    $bill_number = pg_fetch_assoc($result)['bill_number'];
+                                    $bill_url = pg_fetch_assoc($result)['bill_url'];
+                                    $session = pg_fetch_assoc($result)['session'];
+                                    $subject = pg_fetch_assoc($result)['subject'];
+                                    $summary = pg_fetch_assoc($result)['bill_summary'];
+
+                                    echo '<div class="accordion-item">';
+                                    echo '<h2 class="accordion-header">';
+                                    echo '<button class="accordion-button collapsed justify-content-evenly" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' . $i . '" aria-expanded="false" aria-controls="collapse' . $i . '">';
+                                    echo '<strong>' . $session . ': ' . $subject . '</strong> --> ' . $bill_number . '';
+                                    echo '</button>';
+                                    echo '</h2>';
+                                    echo '<div id="collapse' . $i . '" class="accordion-collapse collapse" data-bs-parent="#view-bills">';
+                                    echo '<div class="accordion-body">';
+                                    echo ('<h3 class="text-dark"><a href="' . $bill_url . '">View the Source Doc</a></h3>');
+                                    echo ('<p class="text-dark">' . $summary . '</p>');
+                                    echo '</div>';
+                                    echo '</div>';
+                                    echo '</div>';
                                 }
-                                echo ("</form>");
+                                echo ("</div>");
                             }
                         }
                     } else {
@@ -148,7 +160,7 @@ if ((!isset($_COOKIE['email'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['
                     $result = pg_query($conn, $query);
                     if ($result) {
                         if (pg_num_rows($result) > 0) {
-                            echo ('<div class="accordion accordion-flush m-3 rounded-4" id="view_bills">');
+                            echo ('<div class="accordion accordion-flush m-3" id="view_bills">');
                             for ($i = 0; $i < pg_num_rows($result); $i++) {
                                 $bill_number = pg_fetch_assoc($result)['bill_number'];
                                 $bill_url = pg_fetch_assoc($result)['bill_url'];
