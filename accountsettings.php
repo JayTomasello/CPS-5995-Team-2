@@ -68,8 +68,9 @@ include 'dbconfig.php';
         </style>
         </head>
 
-        <body class='container'>;
+        <body class='container'>
             <div class='message-box text-dark'><h4>You must login as a Subscribed User to view this page.</h4></div>
+            <button class='btn btn-primary mt-3' onclick='window.location.href = `login.php`'>Login</button>
 
             </body>
 
@@ -143,22 +144,48 @@ include 'dbconfig.php';
         ?>
 
         <form class="bg-secondary rounded-5 p-3" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-            <h3 class="text-light">I wish to receive updates on laws regarding...</h3>
-            <div class="d-flex flex-wrap rounded-5 p-2">
+            <h3 class="text-light m-3">I wish to receive updates on laws regarding...</h3>
+
+            <div class="accordion m-1" id="subjectAccordion">
                 <?php
-                foreach ($lawCategories as $category) {
-                    $categoryNoSpace = str_replace(' ', '_', $category);
-                    if (in_array($category, $selectedCategories)) {
-                        echo ('<input class="btn-check visually-hidden" type="checkbox" id="' . $categoryNoSpace . '" name="selectedCategories[]" value="' . $category . '" checked>');
-                        echo ('<label class="btn text-light btn-outline-dark m-2" for="' . $categoryNoSpace . '">' . $category . '</label>');
-                    } else {
-                        echo ('<input class="btn-check visually-hidden" type="checkbox" id="' . $categoryNoSpace . '" name="selectedCategories[]" value="' . $category . '">');
-                        echo ('<label class="btn text-light btn-outline-dark m-2" for="' . $categoryNoSpace . '">' . $category . '</label>');
+                $query = "SELECT DISTINCT head_category FROM subjects";
+                $result = pg_query($conn, $query);
+                $x = 1;
+                while ($row = pg_fetch_assoc($result)) {
+                    $headCategory = str_replace(' ', '_', $row['head_category']);
+                    echo ('<div class="accordion-item bg-primary">');
+                    echo ('<h2 class="accordion-header">');
+                    echo ('<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' . $x . '" aria-expanded="false" aria-controls="collapse' . $x . '">' . $row['head_category'] . '</button>');
+                    echo ('</h2>');
+                    echo ('<div id="collapse' . $x . '" class="accordion-collapse collapse" data-bs-parent="#subjectAccordion" name="head_category_display">');
+                    echo ('<ul>');
+
+                    $query2 = "SELECT name from subjects WHERE head_category = '" . $row['head_category'] . "' ORDER BY name";
+                    $result2 = pg_query($conn, $query2);
+
+                    while ($row2 = pg_fetch_assoc($result2)) {
+                        echo ("<div class='m-2'>");
+                        $name = $row2['name'];
+                        $nameNoSpace = str_replace(' ', '_', $name);
+                        if (in_array($name, $selectedCategories)) {
+                            echo ("<input class='btn-check' type='checkbox' id='" . $nameNoSpace . "' name='selectedCategories[]' value='" . $name . "' checked>");
+                            echo ("<label class='btn text-light btn-outline-dark m-2' for='" . $nameNoSpace . "'>" . $name . "</label>");
+                        } else {
+                            echo ("<input class='btn-check' type='checkbox' id='" . $nameNoSpace . "' name='selectedCategories[]' value='" . $name . "'>");
+                            echo ("<label class='btn text-light btn-outline-dark m-2' for='" . $nameNoSpace . "'>" . $name . "</label>");
+                        }
+                        echo ("</div>");
                     }
+                    echo ('</ul>');
+                    echo ('</div>');
+                    echo ('</div>');
+                    $x++;
                 }
                 ?>
+
+                <button type="submit" name="save_legal_preferences" class="btn btn-primary m-4">Save Preferences</button>
             </div>
-            <button type="submit" name="save_legal_preferences" class="btn btn-primary">Save Preferences</button>
+
         </form>
 
         <?php
@@ -171,21 +198,21 @@ include 'dbconfig.php';
 
             // Insert new preferences
             if (isset($_POST['selectedCategories'])) {
-                    if (count($_POST['selectedCategories']) > 5) {
-                        echo "<h4 style='color:red;text-align:center;'>You can only select 5 subjects.</h4>";
-                    } else {
-                        // Delete existing user_subject entries for this user
-                        $deleteQuery = "DELETE FROM user_subject WHERE uid = $uid";
-                        pg_query($conn, $deleteQuery);
-                        
-                        foreach ($_POST['selectedCategories'] as $category) {
+                if (count($_POST['selectedCategories']) > 5) {
+                    echo "<h4 style='color:red;text-align:center;'>You can only select 5 subjects.</h4>";
+                } else {
+                    // Delete existing user_subject entries for this user
+                    $deleteQuery = "DELETE FROM user_subject WHERE uid = $uid";
+                    pg_query($conn, $deleteQuery);
+
+                    foreach ($_POST['selectedCategories'] as $category) {
 
                         $insertQuery = "INSERT INTO user_subject (uid, subject) VALUES ($uid, '" . pg_escape_string($conn, $category) . "')";
                         pg_query($conn, $insertQuery);
+                    }
                 }
             }
         }
-    }
         ?>
 
     </div>

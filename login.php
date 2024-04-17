@@ -1,3 +1,7 @@
+<?php
+include "dbconfig.php";
+?>
+
 <html lang="en">
 
 <head>
@@ -11,12 +15,12 @@
 
 <?php
 
-    if (isset($_COOKIE['email'])) {
-        $email = $_COOKIE['email'];
-        setcookie("email", $email, time() - 3600, "/");
-    }
+if (isset($_COOKIE['email'])) {
+    $email = $_COOKIE['email'];
+    setcookie("email", $email, time() - 3600, "/");
+}
 
-    ?>
+?>
 
 <?php include('header2.php'); ?>
 
@@ -44,21 +48,44 @@
         if (isset($_POST['login']) && isset($_POST['Email']) && isset($_POST['Password'])) {
             $email = $_POST['Email'];
             $password = $_POST['Password'];
-            $command = "python userLogin.py $email $password";
-            exec($command, $output, $return_var);
-            if (isset($output[0])) {
-                if ($output[0] == 'Correct password') {
-                    setcookie("email", $email, time() + 3600, "/");
-                    header("Location: ./index.php");
+            $query = "SELECT * FROM sub_user WHERE email='$email'";
+            $result = pg_query($conn, $query);
+
+            if ($result) {
+                $output = pg_fetch_assoc($result);
+                if (!$output) {
+                    echo "<h4 style='color:red;text-align:center;'>User does not exist.</h4>";
+                    exit;
                 } else {
-                    echo "<h4 style='color:red;text-align:center;'>" . $output[0] . "</h4>";
+                    $dbemail = $output['email'];
+                    $dbpassword = $output['password'];
+                    if ($dbemail == $email && $dbpassword == $password) {
+                        setcookie("email", $email, time() + 3600, "/");
+                        header("Location: ./index.php");
+                    } else {
+                        echo "<h4 style='color:red;text-align:center;'>Incorrect password.</h4>";
+                    }
                 }
-        } else {
-            echo "<h4 style='color:red;text-align:center;'>Incorrect Email</h4>";
+            } else {
+                echo "An error occurred.\n";
+                exit;
+            }
         }
-        } else {
-            echo "<h2 class='text-center'>Login failed!</h2>";
-        }
+
+
+        //     if (isset($output[0])) {
+        //         if ($output[0] == 'Correct password') {
+        //             setcookie("email", $email, time() + 3600, "/");
+        //             header("Location: ./index.php");
+        //         } else {
+        //             echo "<h4 style='color:red;text-align:center;'>" . $output[0] . "</h4>";
+        //         }
+        //     } else {
+        //         echo "<h4 style='color:red;text-align:center;'>Incorrect</h4>";
+        //     }
+        // } else {
+        //     echo "<h2 class='text-center'>Login failed!</h2>";
+        // }
     }
 
     ?>

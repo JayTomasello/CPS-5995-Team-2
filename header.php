@@ -108,17 +108,20 @@ include('dbconfig.php');
 
     <!-- SUBCATEGORIES -->
     <?php
-    $query1 = "SELECT DISTINCT head_category FROM subjects";
+    $query1 = "SELECT DISTINCT head_category FROM subjects ORDER BY head_category";
+    $result1 = pg_query($conn, $query1);
+    // $firstletter = 
+
     $result1 = pg_query($conn, $query1);
     while ($row = pg_fetch_assoc($result1)) {
         $headCategory = str_replace(' ', '_', $row['head_category']);
         echo ('<div class="d-flex m-3 flex-wrap dropdown-menu visually-hidden" name="head_category_display" id="popup_' . $headCategory . '" style="z-index:1000">');
         echo ('<form action="index.php" class="d-flex flex-wrap" name="subject_search" method="GET">');
-        $query2 = "SELECT name FROM subjects WHERE head_category = '" . $row['head_category'] . "'";
+        $query2 = "SELECT name FROM subjects WHERE head_category = '" . $row['head_category'] . "' ORDER BY name";
         $result2 = pg_query($conn, $query2);
         while ($row2 = pg_fetch_assoc($result2)) {
             $name = $row2['name'];
-            echo ("<button class='btn' name='subject_search' value=" . str_replace(' ', '_', $name) . ">" . $name . "</button>");
+            echo ("<button class='btn btn-outline-dark m-2' name='subject_search' value=" . str_replace(' ', '_', $name) . ">" . $name . "</button>");
         }
         echo ('</form>');
         echo ('</div>');
