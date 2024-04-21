@@ -168,18 +168,24 @@ include 'dbconfig.php';
             $result = pg_query($conn, $query);
             $uid = pg_fetch_assoc($result)['uid'];
 
-            // Delete existing user_subject entries for this user
-            $deleteQuery = "DELETE FROM user_subject WHERE uid = $uid";
-            pg_query($conn, $deleteQuery);
 
             // Insert new preferences
             if (isset($_POST['selectedCategories'])) {
-                foreach ($_POST['selectedCategories'] as $category) {
-                    $insertQuery = "INSERT INTO user_subject (uid, subject) VALUES ($uid, '" . pg_escape_string($conn, $category) . "')";
-                    pg_query($conn, $insertQuery);
+                    if (count($_POST['selectedCategories']) > 5) {
+                        echo "<h4 style='color:red;text-align:center;'>You can only select 5 subjects.</h4>";
+                    } else {
+                        // Delete existing user_subject entries for this user
+                        $deleteQuery = "DELETE FROM user_subject WHERE uid = $uid";
+                        pg_query($conn, $deleteQuery);
+                        
+                        foreach ($_POST['selectedCategories'] as $category) {
+
+                        $insertQuery = "INSERT INTO user_subject (uid, subject) VALUES ($uid, '" . pg_escape_string($conn, $category) . "')";
+                        pg_query($conn, $insertQuery);
                 }
             }
         }
+    }
         ?>
 
     </div>

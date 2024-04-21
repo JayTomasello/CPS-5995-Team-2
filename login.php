@@ -1,7 +1,3 @@
-<?php
-include("dbconfig.php");
-?>
-
 <html lang="en">
 
 <head>
@@ -15,12 +11,12 @@ include("dbconfig.php");
 
 <?php
 
-if (isset($_COOKIE['email'])) {
-    $email = $_COOKIE['email'];
-    setcookie("email", $email, time() - 3600, "/");
-}
+    if (isset($_COOKIE['email'])) {
+        $email = $_COOKIE['email'];
+        setcookie("email", $email, time() - 3600, "/");
+    }
 
-?>
+    ?>
 
 <?php include('header2.php'); ?>
 
@@ -48,20 +44,20 @@ if (isset($_COOKIE['email'])) {
         if (isset($_POST['login']) && isset($_POST['Email']) && isset($_POST['Password'])) {
             $email = $_POST['Email'];
             $password = $_POST['Password'];
-            $query = "SELECT * FROM sub_user WHERE email='$email' AND password='$password'";
-            echo ($query);
-            $result = pg_query($conn, $query);
-            $output = pg_fetch_row($result);
-            if ($result) {
-                if ($output) {
+            $command = "python userLogin.py $email $password";
+            exec($command, $output, $return_var);
+            if (isset($output[0])) {
+                if ($output[0] == 'Correct password') {
                     setcookie("email", $email, time() + 3600, "/");
-                    header("Location: index.php");
+                    header("Location: ./index.php");
                 } else {
-                    echo ("<div class='alert alert-danger' role='alert'>Invalid Email or Password</div>");
+                    echo "<h4 style='color:red;text-align:center;'>" . $output[0] . "</h4>";
                 }
-            } else {
-                echo ("<div class='alert alert-danger' role='alert'>Invalid Email or Password</div>");
-            }
+        } else {
+            echo "<h4 style='color:red;text-align:center;'>Incorrect Email</h4>";
+        }
+        } else {
+            echo "<h2 class='text-center'>Login failed!</h2>";
         }
     }
 

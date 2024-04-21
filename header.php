@@ -113,12 +113,12 @@ include('dbconfig.php');
     while ($row = pg_fetch_assoc($result1)) {
         $headCategory = str_replace(' ', '_', $row['head_category']);
         echo ('<div class="d-flex m-3 flex-wrap dropdown-menu visually-hidden" name="head_category_display" id="popup_' . $headCategory . '" style="z-index:1000">');
-        echo ('<form class="d-flex flex-wrap" name="subject_search" action="GET">');
+        echo ('<form action="index.php" class="d-flex flex-wrap" name="subject_search" method="GET">');
         $query2 = "SELECT name FROM subjects WHERE head_category = '" . $row['head_category'] . "'";
         $result2 = pg_query($conn, $query2);
-        for ($i = 0; $i < pg_num_rows($result2); $i++) {
-            $row2 = pg_fetch_assoc($result2);
-            echo ('<button class="btn" name="' . $row2['name'] . '">' . $row2['name'] . '</button>');
+        while ($row2 = pg_fetch_assoc($result2)) {
+            $name = $row2['name'];
+            echo ("<button class='btn' name='subject_search' value=" . str_replace(' ', '_', $name) . ">" . $name . "</button>");
         }
         echo ('</form>');
         echo ('</div>');
