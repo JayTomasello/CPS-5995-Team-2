@@ -3,10 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LD4NJ</title>
+    <title>LD4NJ - Login</title>
     <link rel="icon" href="./NJLawDigest Logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-image: url(./Courthouse.jpg);
+            background-size: cover;
+            background-position: center -100px;
+            color: #333; /* Dark text for better contrast */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #333; /* Dark text for better contrast */
+        }
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background for form inputs */
+        }
+    </style>
 </head>
 
 <?php
@@ -20,11 +34,11 @@
 
 <?php include('header2.php'); ?>
 
-<body class="justify-content-center" style="background-image: url(./Courthouse.jpg); background-size:cover; background-position:center -100px">
-    <h3 class="text-center" style="margin-top: 50px; font-family:Georgia, 'Times New Roman', Times, serif">By Xavier Amparo, Matthew Fernandez, Eric Landaverde, Julio Rodriguez, and Joseph Tomasello</h3>
-    <form class="text-center m-5" action="" method="POST">
-        <h1 class="card-title" style="font-family:Georgia, 'Times New Roman', Times, serif">Law Digest 4 New Jersey</h1><br>
-        <h2 class="card-title" style="font-family:Georgia, 'Times New Roman', Times, serif">Login</h2>
+<div class="container">
+        <div class="row justify-content-center">
+            <form class="col-lg-6 col-md-8 col-sm-10 text-center m-5" action="" method="POST">
+            <br><h1 class="card-title">Law Digest 4 New Jersey</h1><br><br>
+                <h3 class="card-title">Login</h3>
         <div class="mb-3">
             <input name="Email" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter Email" required>
         </div>

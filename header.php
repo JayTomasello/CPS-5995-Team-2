@@ -15,6 +15,12 @@ include('dbconfig.php');
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 
+<style>
+
+body { background:rgb(170, 159, 91); }
+
+</style>
+
 <body>
     <?php
     if ((!isset($_COOKIE['email'])) && ((!isset($_SESSION['agree'])) || ($_SESSION['agree'] == FALSE))) {
@@ -99,31 +105,20 @@ include('dbconfig.php');
             while ($row = pg_fetch_assoc($result)) {
                 echo ('<div class="list-group-item" >');
                 $headCategory = str_replace(' ', '_', $row['head_category']);
-                echo ('<button class="btn btn-dark text-light" data-bs-toggle="button" name="head_category" id="head_' . $headCategory . '" onclick="select(\'' . $headCategory . '\')" aria-expanded="false">' . $row['head_category'] . '</button>');
+                echo ('<button class="btn btn-dark text-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">' . $row['head_category'] . '</button>');
+                echo ('<ul class="dropdown-menu" id="popup_' . $headCategory . '">');
+                $query2 = "SELECT name FROM subjects WHERE head_category = '" . $row['head_category'] . "'";
+                $result2 = pg_query($conn, $query2);
+                while ($row2 = pg_fetch_assoc($result2)) {
+                    $name = $row2['name'];
+                    echo ("<li><a class='dropdown-item' href='index.php?subject_search=$name'>" . $name . "</a></li>");
+                }
+                echo ('</ul>');
                 echo ('</div>');
             }
             ?>
         </div>
     </nav>
-
-    <!-- SUBCATEGORIES -->
-    <?php
-    $query1 = "SELECT DISTINCT head_category FROM subjects";
-    $result1 = pg_query($conn, $query1);
-    while ($row = pg_fetch_assoc($result1)) {
-        $headCategory = str_replace(' ', '_', $row['head_category']);
-        echo ('<div class="d-flex m-3 flex-wrap dropdown-menu visually-hidden" name="head_category_display" id="popup_' . $headCategory . '" style="z-index:1000">');
-        echo ('<form action="index.php" class="d-flex flex-wrap" name="subject_search" method="GET">');
-        $query2 = "SELECT name FROM subjects WHERE head_category = '" . $row['head_category'] . "'";
-        $result2 = pg_query($conn, $query2);
-        while ($row2 = pg_fetch_assoc($result2)) {
-            $name = $row2['name'];
-            echo ("<button class='btn' name='subject_search' value=" . str_replace(' ', '_', $name) . ">" . $name . "</button>");
-        }
-        echo ('</form>');
-        echo ('</div>');
-    }
-    ?>
 
 </body>
 
