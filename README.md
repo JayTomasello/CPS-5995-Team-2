@@ -3,6 +3,9 @@
 ## Project Overview Video
 Link: https://drive.google.com/file/d/1nki-_HL0A65HXnbPE16afDBLcCU5ntHO/view?usp=sharing
 
+## Final Report
+Link: https://drive.google.com/file/d/1IF2ln6PoiHiztEsfAImqL3l0GKTOEkqX/view?usp=drive_link
+
 ## Abstract
 For the average citizen, hearing of the new legislation being passed in your area on the daily news is helpful, but how to navigate and comply with these laws can be confusing. You may be a veteran, business owner, retiree, or divorced/widowed, and have no understanding of how the bills that get passed which cover these types of circumstances may affect you or your family. Our system, Law Digest 4 New Jersey, seeks to make the entire breadth of past and present New Jersey state law both accessible and easy to comprehend thanks to our Large Language Model (LLM) AI. Our LLM is designed to use its Natural Language Processing (NLP) capabilities to both summarize the official bills taken from the New Jersey Office of Legislative Services in everyday language and answer questions about each bill to clear up any misunderstandings our users may have about New Jersey state law. Our belief is that this will enhance public awareness and therefore increase compliance with newly passed ordinances, leading to less unintended breaches of the law by informed citizens.
 
