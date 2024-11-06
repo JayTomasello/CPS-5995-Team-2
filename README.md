@@ -1,4 +1,4 @@
-# Law Digest 4 New Jersey (LD4NJ) - MS Capstone Project
+# MS Capstone Project - Law Digest 4 New Jersey (LD4NJ)
 
 ## Project Overview Video
 Link: https://drive.google.com/file/d/1nki-_HL0A65HXnbPE16afDBLcCU5ntHO/view?usp=sharing
