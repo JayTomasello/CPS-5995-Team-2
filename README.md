@@ -1,4 +1,4 @@
-# CPS*5995 - MS Capstone Project
+# Law Digest 4 New Jersey (LD4NJ) - MS Capstone Project
 
 ## Project Overview Video
 Link: https://drive.google.com/file/d/1nki-_HL0A65HXnbPE16afDBLcCU5ntHO/view?usp=sharing
@@ -28,3 +28,6 @@ For the layperson, the interpretation of state law, how to comply with it, and t
   - Supabase (PostgreSQL database), PHP, Python, Llama2, Selenium Web Scraper
 - Software Tools Used
   - Github, Visual Studio Code (VSC), XAMPP
+
+## Acknowledgements
+This project was created under the supervision of Dr. Jing-Chiou Liou of Kean University, instructor for CPS*5995 - CIS Capstone.
